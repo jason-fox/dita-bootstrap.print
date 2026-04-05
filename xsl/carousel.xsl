@@ -36,17 +36,7 @@
       </xsl:if>
 
       <!-- Dynamic representation for print: A table with variable columns -->
-      <fo:table table-layout="fixed" width="100%">
-        <xsl:choose>
-          <xsl:when test="$colCount = 1">
-            <xsl:attribute name="border-collapse">collapse</xsl:attribute>
-            <xsl:attribute name="border">1pt solid #dee2e6</xsl:attribute>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:attribute name="border-collapse">separate</xsl:attribute>
-            <xsl:attribute name="border-spacing">5pt</xsl:attribute>
-          </xsl:otherwise>
-        </xsl:choose>
+      <fo:table table-layout="fixed" width="100%" border-collapse="separate" border-spacing="5pt">
         <xsl:for-each select="1 to $colCount">
            <fo:table-column column-width="proportional-column-width(1)"/>
         </xsl:for-each>
@@ -60,32 +50,27 @@
             
             <fo:table-row>
               <xsl:for-each select="$current-group">
-                <fo:table-cell padding="5pt">
+                <fo:table-cell border="1pt solid" fox:border-radius="4pt">
+                  <xsl:attribute name="padding">
+                    <xsl:choose>
+                      <xsl:when test="$colCount = 1">10pt</xsl:when>
+                      <xsl:otherwise>5pt</xsl:otherwise>
+                    </xsl:choose>
+                  </xsl:attribute>
+                  
+                  <!-- Border color logic: carousel/@color or default grey -->
+                  <xsl:variable name="theme" select="ancestor::*[contains(@class, ' bootstrap-d/carousel ')][1]/@color"/>
                   <xsl:choose>
-                    <xsl:when test="$colCount = 1">
-                      <xsl:attribute name="padding">10pt</xsl:attribute>
-                      <xsl:if test="not($group-start-idx + count($current-group) - 1 = $group-count)">
-                        <xsl:attribute name="border-bottom">1pt solid #dee2e6</xsl:attribute>
-                      </xsl:if>
+                    <xsl:when test="$theme">
+                       <xsl:call-template name="processBootstrapBorderColor">
+                         <xsl:with-param name="attrValue" select="$theme"/>
+                       </xsl:call-template>
+                       <xsl:call-template name="processBootstrapAttrSetReflection">
+                          <xsl:with-param name="attrSet" select="concat('__bg__', $theme, '-subtle')"/>
+                       </xsl:call-template>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:attribute name="border">1pt solid</xsl:attribute>
-                      <xsl:attribute name="fox:border-radius">4pt</xsl:attribute>
-                      <!-- Border color logic: carousel/@color or default grey -->
-                      <xsl:variable name="theme" select="ancestor::*[contains(@class, ' bootstrap-d/carousel ')][1]/@color"/>
-                      <xsl:choose>
-                        <xsl:when test="$theme">
-                           <xsl:call-template name="processBootstrapBorderColor">
-                             <xsl:with-param name="attrValue" select="$theme"/>
-                           </xsl:call-template>
-                           <xsl:call-template name="processBootstrapAttrSetReflection">
-                              <xsl:with-param name="attrSet" select="concat('__bg__', $theme, '-subtle')"/>
-                           </xsl:call-template>
-                        </xsl:when>
-                        <xsl:otherwise>
-                          <xsl:attribute name="border-color">#dee2e6</xsl:attribute>
-                        </xsl:otherwise>
-                      </xsl:choose>
+                      <xsl:attribute name="border-color">#dee2e6</xsl:attribute>
                     </xsl:otherwise>
                   </xsl:choose>
 
