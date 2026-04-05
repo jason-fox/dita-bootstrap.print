@@ -259,9 +259,9 @@
   <!-- Border Thickness -->
   <xsl:attribute-set name="border-1"><xsl:attribute name="border-width">1pt</xsl:attribute></xsl:attribute-set>
   <xsl:attribute-set name="border-2"><xsl:attribute name="border-width">2pt</xsl:attribute></xsl:attribute-set>
-  <xsl:attribute-set name="border-3"><xsl:attribute name="border-width">4pt</xsl:attribute></xsl:attribute-set>
-  <xsl:attribute-set name="border-4"><xsl:attribute name="border-width">6pt</xsl:attribute></xsl:attribute-set>
-  <xsl:attribute-set name="border-5"><xsl:attribute name="border-width">8pt</xsl:attribute></xsl:attribute-set>
+  <xsl:attribute-set name="border-3"><xsl:attribute name="border-width">3pt</xsl:attribute></xsl:attribute-set>
+  <xsl:attribute-set name="border-4"><xsl:attribute name="border-width">4pt</xsl:attribute></xsl:attribute-set>
+  <xsl:attribute-set name="border-5"><xsl:attribute name="border-width">5pt</xsl:attribute></xsl:attribute-set>
 
   <xsl:attribute-set name="border-primary-subtle"><xsl:attribute name="border-color">#e0f2ff</xsl:attribute></xsl:attribute-set>
   <xsl:attribute-set name="border-secondary-subtle"><xsl:attribute name="border-color">#e2e3e5</xsl:attribute></xsl:attribute-set>

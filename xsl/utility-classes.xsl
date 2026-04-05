@@ -34,6 +34,14 @@
     <xsl:if test="$attrValue">
       <xsl:for-each select="tokenize(normalize-space($attrValue), ' ')">
         <xsl:variable name="token" select="."/>
+
+        <!-- Apply base border style for numeric thickness outside the variable to avoid Saxon error -->
+        <xsl:if test="string(number($token)) != 'NaN'">
+          <xsl:call-template name="processBootstrapAttrSetReflection">
+            <xsl:with-param name="attrSet" select="'border'"/>
+          </xsl:call-template>
+        </xsl:if>
+
         <xsl:variable name="attrSetName">
           <xsl:choose>
             <xsl:when test="$token = 'yes' or $token = 'true' or $token = 'border'">border</xsl:when>
@@ -45,6 +53,7 @@
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
+        
         <xsl:call-template name="processBootstrapAttrSetReflection">
           <xsl:with-param name="attrSet" select="$attrSetName"/>
         </xsl:call-template>
