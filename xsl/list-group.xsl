@@ -5,7 +5,7 @@
                 version="2.0">
 
   <!-- Matches list-group specialized elements or ul with list-group outputclass -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/list-group ') or (tokenize(@outputclass, ' ') = 'list-group' and contains(@class, ' topic/ul '))]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/list-group ') or (tokenize(@outputclass, ' ') = 'list-group' and contains(@class, ' topic/ul '))]" priority="5">
     <fo:block>
       <xsl:call-template name="commonattributes"/>
       <xsl:call-template name="processBootstrapDirection"/>
@@ -39,7 +39,7 @@
   </xsl:template>
 
   <!-- Matches list items within a list-group -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/list-group ') or (tokenize(@outputclass, ' ') = 'list-group' and contains(@class, ' topic/ul '))]/*[contains(@class, ' topic/li ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/list-group ') or (tokenize(@outputclass, ' ') = 'list-group' and contains(@class, ' topic/ul '))]/*[contains(@class, ' topic/li ')]" priority="5">
     <fo:table-row>
       <xsl:variable name="theme" select="../@color"/>
       <xsl:variable name="itemTheme" select="tokenize(@outputclass, ' ')[starts-with(., 'list-group-item-')]"/>

@@ -5,7 +5,7 @@
                 version="2.0">
 
   <!-- Matches accordion specialized elements or bodydiv with accordion outputclass -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/accordion ') or (contains(@class, ' topic/bodydiv ') and tokenize(@outputclass, ' ') = 'accordion')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/accordion ') or (contains(@class, ' topic/bodydiv ') and tokenize(@outputclass, ' ') = 'accordion')]" priority="5">
     <fo:block>
       <xsl:call-template name="commonattributes"/>
       <xsl:call-template name="processBootstrapDirection"/>

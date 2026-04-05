@@ -5,7 +5,7 @@
                 version="2.0">
 
   <!-- Alert Support -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/alert ')]" priority="100">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/alert ')]" priority="5">
     <fo:block xsl:use-attribute-sets="section">
       <xsl:call-template name="commonattributes"/>
       

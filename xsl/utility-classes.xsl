@@ -2,6 +2,10 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:opentopic-func="http://www.idiominc.com/opentopic/exsl/function"
+                xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot"
+                exclude-result-prefixes="xs opentopic-func dita-ot"
                 version="2.0">
 
   <xsl:param name="BOOTSTRAP_ICONS_INCLUDE" select="'yes'"/>
@@ -357,7 +361,7 @@
   </xsl:template>
 
   <!-- Text/Paragraphs within Blockquote (lq) -->
-  <xsl:template match="*[contains(@class, ' topic/lq ')]/*[contains(@class, ' topic/p ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' topic/lq ')]/*[contains(@class, ' topic/p ')]" priority="5">
     <fo:block xsl:use-attribute-sets="p">
       <xsl:call-template name="commonattributes"/>
       
@@ -428,10 +432,10 @@
   </xsl:template>
 
   <!-- Suppress any elements used for dark/light mode switching in print -->
-  <xsl:template match="*[tokenize(normalize-space(@outputclass), ' ') = 'd-light' or tokenize(normalize-space(@outputclass), ' ') = 'd-dark']" priority="100"/>
+  <xsl:template match="*[tokenize(normalize-space(@outputclass), ' ') = 'd-light' or tokenize(normalize-space(@outputclass), ' ') = 'd-dark']" priority="5"/>
 
   <!-- Only render the first image within a picture element -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/picture ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/picture ')]" priority="6">
     <fo:block>
       <xsl:call-template name="commonattributes"/>
       <xsl:apply-templates select="*[contains(@class, ' topic/image ')][1]"/>
@@ -439,10 +443,23 @@
   </xsl:template>
 
   <!-- Thumbnail Support -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/thumbnail ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/thumbnail ')]" priority="6">
     <xsl:if test="not(tokenize(@outputclass, ' ') = 'd-light' or tokenize(@outputclass, ' ') = 'd-dark')">
       <xsl:variable name="content">
-        <fo:external-graphic src="url({@href})" content-width="scale-to-fit" scaling="uniform">
+        <xsl:variable name="resolved-href">
+          <xsl:choose>
+            <xsl:when test="@scope = 'external' or opentopic-func:isAbsolute(@href)">
+              <xsl:value-of select="@href"/>
+            </xsl:when>
+            <xsl:when test="exists(key('jobFile', @href, $job))">
+              <xsl:value-of select="key('jobFile', @href, $job)/@src"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat($input.dir.url, @href)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <fo:external-graphic src="url('{$resolved-href}')" content-width="scale-to-fit" scaling="uniform">
            <xsl:call-template name="commonattributes"/>
            <xsl:if test="@height"><xsl:attribute name="height" select="@height"/></xsl:if>
            <xsl:if test="@width"><xsl:attribute name="width" select="@width"/></xsl:if>

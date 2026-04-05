@@ -18,6 +18,7 @@
   <xsl:include href="button.xsl"/>
   <xsl:include href="badge.xsl"/>
   <xsl:include href="card.xsl"/>
+  <xsl:include href="carousel.xsl"/>
   <xsl:include href="figure.xsl"/>
   <xsl:include href="grid.xsl"/>
   <xsl:include href="icon.xsl"/>

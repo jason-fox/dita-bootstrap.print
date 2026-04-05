@@ -30,7 +30,7 @@
   -->
 
   <!-- 1. Table Header Row Styling -->
-  <xsl:template match="*[contains(@class, ' topic/thead ')]/*[contains(@class, ' topic/row ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' topic/thead ')]/*[contains(@class, ' topic/row ')]" priority="5">
     <fo:table-row xsl:use-attribute-sets="thead.row">
       <xsl:call-template name="commonattributes"/>
       
@@ -55,7 +55,7 @@
   </xsl:template>
 
   <!-- 2. Table Body Row Styling -->
-  <xsl:template match="*[contains(@class, ' topic/tbody ')]/*[contains(@class, ' topic/row ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' topic/tbody ')]/*[contains(@class, ' topic/row ')]" priority="5">
     <fo:table-row xsl:use-attribute-sets="tbody.row">
       <xsl:call-template name="commonattributes"/>
 
@@ -96,7 +96,7 @@
   </xsl:template>
   
   <!-- 3. Entry styling to handle border colors, cell backgrounds, striping and dividends -->
-  <xsl:template match="*[contains(@class, ' topic/entry ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' topic/entry ')]" priority="5">
     <xsl:variable name="isHeader" select="parent::*[contains(@class, ' topic/row ')]/parent::*[contains(@class, ' topic/thead ')]"/>
     <xsl:variable name="isFooter" select="parent::*[contains(@class, ' topic/row ')]/parent::*[contains(@class, ' topic/tfoot ')]"/>
     <xsl:variable name="table" select="ancestor::*[contains(@class, ' topic/table ')][1]"/>

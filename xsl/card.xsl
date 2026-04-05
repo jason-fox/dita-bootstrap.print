@@ -2,11 +2,15 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:opentopic-func="http://www.idiominc.com/opentopic/exsl/function"
+                xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot"
+                exclude-result-prefixes="xs opentopic-func dita-ot"
                 version="2.0">
 
   <!-- Match both specialized card elements and sections/divs with @outputclass='card' -->
   <!-- Aggressive priority="100" to override any other plugin or base templates. -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/card ') or (tokenize(@outputclass, ' ') = 'card' and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/card ') or (tokenize(@outputclass, ' ') = 'card' and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]" priority="5">
     
     <fo:block>
       <xsl:call-template name="processBootstrapDirection"/>
@@ -181,7 +185,7 @@
   </xsl:template>
 
   <!-- Card Title specialized rendering (Removes extra section margins) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/card ') or (tokenize(@outputclass, ' ') = 'card' and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]/*[contains(@class, ' topic/title ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/card ') or (tokenize(@outputclass, ' ') = 'card' and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]/*[contains(@class, ' topic/title ')]" priority="5">
     <fo:block font-size="14pt" font-weight="bold" margin-bottom="8pt">
        <xsl:call-template name="processBootstrapDirection"/>
                 <xsl:apply-templates/>
@@ -189,17 +193,31 @@
   </xsl:template>
 
   <!-- Card Images (Ensure 100% width scaling within the row) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/card ') or (tokenize(@outputclass, ' ') = 'card' and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]//*[contains(@class, ' topic/image ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/card ') or (tokenize(@outputclass, ' ') = 'card' and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]//*[contains(@class, ' topic/image ')]" priority="5">
     <fo:block text-align="center">
       <xsl:call-template name="processBootstrapDirection"/>
-      <fo:external-graphic src="url({@href})" content-width="scale-to-fit" width="100%" height="auto" scaling="uniform">
+      <xsl:variable name="resolved-href">
+        <xsl:choose>
+          <xsl:when test="@scope = 'external' or opentopic-func:isAbsolute(@href)">
+            <xsl:value-of select="@href"/>
+          </xsl:when>
+          <!-- Using standard job mapping for local images -->
+          <xsl:when test="exists(key('jobFile', @href, $job))">
+            <xsl:value-of select="key('jobFile', @href, $job)/@src"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat($input.dir.url, @href)"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <fo:external-graphic src="url('{$resolved-href}')" content-width="scale-to-fit" width="100%" height="auto" scaling="uniform">
         <xsl:call-template name="commonattributes"/>
       </fo:external-graphic>
     </fo:block>
   </xsl:template>
 
   <!-- Card Header/Footer internal blocks -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/card-header ') or contains(@outputclass, 'card-header')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/card-header ') or contains(@outputclass, 'card-header')]" priority="5">
      <fo:block font-weight="bold">
         <xsl:call-template name="processBootstrapDirection"/>
         <xsl:apply-templates/>

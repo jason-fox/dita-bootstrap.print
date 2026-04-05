@@ -2,11 +2,15 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:opentopic-func="http://www.idiominc.com/opentopic/exsl/function"
+                xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot"
+                exclude-result-prefixes="xs opentopic-func dita-ot"
                 version="2.0">
 
   <!-- Figure Component Handling -->
   <!-- Aggressive priority="100" to override any other plugin or base templates. -->
-  <xsl:template match="*[contains(@class, ' topic/fig ')]" priority="100">
+  <xsl:template match="*[contains(@class, ' topic/fig ')]" priority="5">
     <fo:block xsl:use-attribute-sets="fig">
       <xsl:call-template name="commonattributes"/>
       
@@ -36,22 +40,31 @@
   </xsl:template>
 
   <!-- Force Scalefit for Images within Figures -->
-  <xsl:template match="*[contains(@class, ' topic/fig ')]//*[contains(@class, ' topic/image ')]" priority="100">
+  <xsl:template match="*[contains(@class, ' topic/fig ')]//*[contains(@class, ' topic/image ')]" priority="5">
     <fo:block text-align="center">
-      <fo:external-graphic src="url({@href})" content-width="scale-to-fit" width="100%" height="auto" scaling="uniform">
+      <xsl:variable name="resolved-href">
+        <xsl:choose>
+          <xsl:when test="@scope = 'external' or opentopic-func:isAbsolute(@href)">
+            <xsl:value-of select="@href"/>
+          </xsl:when>
+          <!-- Using standard job mapping for local images -->
+          <xsl:when test="exists(key('jobFile', @href, $job))">
+            <xsl:value-of select="key('jobFile', @href, $job)/@src"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat($input.dir.url, @href)"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
+      <fo:external-graphic src="url('{$resolved-href}')" content-width="scale-to-fit" width="100%" height="auto" scaling="uniform">
         <xsl:call-template name="commonattributes"/>
-        <xsl:if test="@width">
-          <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
-        </xsl:if>
-        <xsl:if test="@height">
-          <xsl:attribute name="height"><xsl:value-of select="@height"/></xsl:attribute>
-        </xsl:if>
       </fo:external-graphic>
     </fo:block>
   </xsl:template>
 
   <!-- Figure Title (Caption) -->
-  <xsl:template match="*[contains(@class, ' topic/fig ')]/*[contains(@class, ' topic/title ')]" priority="100">
+  <xsl:template match="*[contains(@class, ' topic/fig ')]/*[contains(@class, ' topic/title ')]" priority="5">
     <fo:block xsl:use-attribute-sets="fig.title">
       <xsl:call-template name="commonattributes"/>
       <!-- Standard Bootstrap Figure Caption styling -->

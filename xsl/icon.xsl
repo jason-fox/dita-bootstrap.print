@@ -4,7 +4,7 @@
                 version="2.0">
 
   <!-- Icon Support (Bootstrap Icons via SVG) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/icon ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/icon ')]" priority="5">
     <xsl:param name="color"/>
     <xsl:if test="@outputclass">
       <xsl:variable name="icon-src">

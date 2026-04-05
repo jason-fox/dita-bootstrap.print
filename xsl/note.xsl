@@ -5,7 +5,7 @@
                 version="2.0">
 
   <!-- Note Support (Styled as Bootstrap Alerts) -->
-  <xsl:template match="*[contains(@class, ' topic/note ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' topic/note ')]" priority="5">
     <fo:block xsl:use-attribute-sets="section">
       <xsl:call-template name="commonattributes"/>
       

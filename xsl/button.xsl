@@ -7,7 +7,7 @@
                 version="2.0">
 
   <!-- Button Toolbar Support (Single Row Block) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button-toolbar ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/button-toolbar ')]" priority="5">
     <fo:block margin-top="6pt" margin-bottom="6pt" wrap-option="no-wrap" keep-together.within-line="always">
       <xsl:call-template name="commonattributes"/>
       <xsl:apply-templates mode="toolbar-child"/>
@@ -27,7 +27,7 @@
   <xsl:template match="text()" mode="toolbar-child"/>
 
   <!-- Button Group Support (Standard) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button-group ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/button-group ')]" priority="5">
     <xsl:variable name="is-vertical" select="@vertical = 'yes'"/>
     <xsl:choose>
         <xsl:when test="$is-vertical">
@@ -74,7 +74,7 @@
   </xsl:template>
 
   <!-- Button Support -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/button ')]" priority="5">
     <xsl:variable name="is-vertical" select="ancestor::*[contains(@class, ' bootstrap-d/button-group ')][1]/@vertical = 'yes'"/>
     <xsl:variable name="element" select="if ($is-vertical) then 'fo:block' else 'fo:inline'"/>
 
@@ -272,9 +272,9 @@
   </xsl:template>
 
   <!-- Explicitly suppress metadata elements in button labels -->
-  <xsl:template match="*[contains(@class, ' topic/desc ') or contains(@class, ' topic/shortdesc ')]" mode="button-label" priority="100"/>
+  <xsl:template match="*[contains(@class, ' topic/desc ') or contains(@class, ' topic/shortdesc ')]" mode="button-label" priority="5"/>
 
   <!-- Suppress any dita-ot internal processing instructions -->
-  <xsl:template match="processing-instruction()" mode="button-label" priority="10"/>
+  <xsl:template match="processing-instruction()" mode="button-label" priority="5"/>
 
 </xsl:stylesheet>

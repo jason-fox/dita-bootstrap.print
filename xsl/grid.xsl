@@ -6,7 +6,7 @@
 
   <!-- Grid Row Handling -->
   <!-- A grid-row is a table of one row with 12 columns. -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/grid-row ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/grid-row ')]" priority="5">
     <fo:table table-layout="fixed" width="100%" space-before="10pt" space-after="10pt">
       <xsl:call-template name="commonattributes"/>
       <xsl:call-template name="processBootstrapDirection"/>
@@ -38,7 +38,7 @@
   </xsl:template>
 
   <!-- Grid Column Handling -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/grid-col ')]" priority="10">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/grid-col ')]" priority="5">
     <fo:table-cell>
       <xsl:call-template name="commonattributes"/>
       <xsl:call-template name="processBootstrapDirection"/>
@@ -73,7 +73,7 @@
        Actually, grid-row template uses a single fo:table-row and 
        apply-templates. If a child is not a grid-col, it will break FO table rules!
   -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/grid-row ')]/*[not(contains(@class, ' bootstrap-d/grid-col '))]" priority="100">
+  <xsl:template match="*[contains(@class, ' bootstrap-d/grid-row ')]/*[not(contains(@class, ' bootstrap-d/grid-col '))]" priority="5">
      <!-- Should we wrap non-grid-col components in a full-width cell? -->
      <fo:table-cell number-columns-spanned="12" padding-left="12pt" padding-right="12pt">
         <fo:block start-indent="0pt">
