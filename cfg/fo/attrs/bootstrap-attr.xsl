@@ -55,15 +55,15 @@
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__warning">
     <xsl:attribute name="background-color">#ffc107</xsl:attribute>
-    <xsl:attribute name="color">#000000</xsl:attribute>
+    <xsl:attribute name="color">#212529</xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__info">
     <xsl:attribute name="background-color">#0dcaf0</xsl:attribute>
-    <xsl:attribute name="color">#000000</xsl:attribute>
+    <xsl:attribute name="color">#212529</xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__light">
     <xsl:attribute name="background-color">#f8f9fa</xsl:attribute>
-    <xsl:attribute name="color">#000000</xsl:attribute>
+    <xsl:attribute name="color">#212529</xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__dark">
     <xsl:attribute name="background-color">#212529</xsl:attribute>
@@ -75,7 +75,7 @@
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__white">
     <xsl:attribute name="background-color">#ffffff</xsl:attribute>
-    <xsl:attribute name="color">#000000</xsl:attribute>
+    <xsl:attribute name="color">#212529</xsl:attribute>
   </xsl:attribute-set>
 
   <!-- Subtle Background Colors (for Alerts, Callouts, etc.) -->
@@ -300,7 +300,9 @@
   <xsl:attribute-set name="display-5"><xsl:attribute name="font-size">28pt</xsl:attribute><xsl:attribute name="font-weight">300</xsl:attribute><xsl:attribute name="line-height">1.2</xsl:attribute></xsl:attribute-set>
   <xsl:attribute-set name="display-6"><xsl:attribute name="font-size">24pt</xsl:attribute><xsl:attribute name="font-weight">300</xsl:attribute><xsl:attribute name="line-height">1.2</xsl:attribute></xsl:attribute-set>
 
-  <!-- No border -->
-  <xsl:attribute-set name="border-0"><xsl:attribute name="border">none</xsl:attribute></xsl:attribute-set>
+  <!-- Table Striping -->
+  <xsl:attribute-set name="table-striped">
+      <xsl:attribute name="background-color">#f2f2f2</xsl:attribute>
+  </xsl:attribute-set>
 
 </xsl:stylesheet>

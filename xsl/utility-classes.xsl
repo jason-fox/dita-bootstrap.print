@@ -317,18 +317,80 @@
   <xsl:template match="*[contains(@class, ' topic/lq ')]">
     <fo:block margin-bottom="12pt">
       <xsl:call-template name="commonattributes"/>
+      <xsl:if test="@color">
+        <xsl:call-template name="processBootstrapAttrSetReflection">
+          <xsl:with-param name="attrSet" select="concat('__bg__', @color)"/>
+        </xsl:call-template>
+        <xsl:if test="not(@padding)">
+          <xsl:attribute name="padding">5pt</xsl:attribute>
+        </xsl:if>
+      </xsl:if>
+      <xsl:call-template name="processBootstrapSpacing">
+        <xsl:with-param name="attrValue" select="@padding"/>
+        <xsl:with-param name="prefix" select="'p'"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapSpacing">
+        <xsl:with-param name="attrValue" select="@margin"/>
+        <xsl:with-param name="prefix" select="'m'"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapBorder">
+        <xsl:with-param name="attrValue" select="@border"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapWidth">
+        <xsl:with-param name="attrValue" select="@width"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapBorderColor">
+        <xsl:with-param name="attrValue" select="@bordercolor"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapRounded">
+        <xsl:with-param name="attrValue" select="@rounded"/>
+      </xsl:call-template>
       <xsl:call-template name="processBootstrapOutputClass">
         <xsl:with-param name="attrValue" select="@outputclass"/>
       </xsl:call-template>
       <xsl:call-template name="processBootstrapDirection"/>
+      <xsl:if test="not(@outputclass)">
+        <xsl:attribute name="font-size">15pt</xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates/>
     </fo:block>
   </xsl:template>
 
   <!-- Text/Paragraphs within Blockquote (lq) -->
   <xsl:template match="*[contains(@class, ' topic/lq ')]/*[contains(@class, ' topic/p ')]" priority="10">
-    <fo:block font-size="15pt" margin-bottom="12pt" line-height="1.5">
+    <fo:block xsl:use-attribute-sets="p">
       <xsl:call-template name="commonattributes"/>
+      
+      <!-- Default large font for lq/p unless an override is present -->
+      <xsl:if test="not(@outputclass) and not(parent::*/@outputclass)">
+        <xsl:attribute name="font-size">15pt</xsl:attribute>
+      </xsl:if>
+
+      <xsl:call-template name="processBootstrapSpacing">
+        <xsl:with-param name="attrValue" select="@padding"/>
+        <xsl:with-param name="prefix" select="'p'"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapSpacing">
+        <xsl:with-param name="attrValue" select="@margin"/>
+        <xsl:with-param name="prefix" select="'m'"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapBorder">
+        <xsl:with-param name="attrValue" select="@border"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapWidth">
+        <xsl:with-param name="attrValue" select="@width"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapBorderColor">
+        <xsl:with-param name="attrValue" select="@bordercolor"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapRounded">
+        <xsl:with-param name="attrValue" select="@rounded"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapOutputClass">
+        <xsl:with-param name="attrValue" select="@outputclass"/>
+      </xsl:call-template>
+      <xsl:call-template name="processBootstrapDirection"/>
+      <xsl:attribute name="line-height">1.5</xsl:attribute>
       <xsl:apply-templates/>
     </fo:block>
   </xsl:template>

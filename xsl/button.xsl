@@ -110,7 +110,7 @@
               <xsl:with-param name="attrSet" select="concat('__bg__', $theme)"/>
             </xsl:call-template>
             <xsl:call-template name="processBootstrapAttrSetReflection">
-              <xsl:with-param name="attrSet" select="concat('__color__', if ($theme = 'warning' or $theme = 'light') then 'black' else 'white')"/>
+              <xsl:with-param name="attrSet" select="concat('__color__', if ($theme = 'warning' or $theme = 'light') then 'dark' else 'white')"/>
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>

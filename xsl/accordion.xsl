@@ -59,10 +59,15 @@
                      <xsl:with-param name="attrSet" select="concat('__bg__', $parent-color)"/>
                   </xsl:call-template>
                </xsl:when>
-               <xsl:otherwise>
-                  <xsl:attribute name="background-color">#ffffff</xsl:attribute>
-                  <xsl:attribute name="color">#212529</xsl:attribute>
-               </xsl:otherwise>
+                <xsl:otherwise>
+                  <!-- Default background matches striped tables -->
+                  <xsl:call-template name="processBootstrapAttrSetReflection">
+                    <xsl:with-param name="attrSet" select="'table-striped'"/>
+                  </xsl:call-template>
+                  <xsl:call-template name="processBootstrapAttrSetReflection">
+                    <xsl:with-param name="attrSet" select="'__color__dark'"/>
+                  </xsl:call-template>
+                </xsl:otherwise>
             </xsl:choose>
             <fo:block font-weight="bold">
                <xsl:apply-templates select="*[contains(@class, ' topic/title ')]" mode="accordion-header"/>

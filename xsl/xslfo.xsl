@@ -23,5 +23,6 @@
   <xsl:include href="icon.xsl"/>
   <xsl:include href="list-group.xsl"/>
   <xsl:include href="note.xsl"/>
+  <xsl:include href="tables.xsl"/>
 
 </xsl:stylesheet>
