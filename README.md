@@ -29,7 +29,7 @@ dita --input=path/to/your.ditamap \
 
 ## Featured Bootstrap components
 
-The plug-in includes XSL-FO handling for the following DITA Bootstrap components. You can use these either through the **DITA Bootstrap Specialization** elements to achieve a consistent look in print:
+The plug-in includes XSL-FO handling for the following DITA Bootstrap components. You can use these through the **DITA Bootstrap Specialization** elements to achieve a consistent look in print:
 
 - [Accordions](https://infotexture.github.io/dita-bootstrap/accordion.html) (`<accordion>`)
 - [Alerts](https://infotexture.github.io/dita-bootstrap/alerts.html) (`<alert>`)
