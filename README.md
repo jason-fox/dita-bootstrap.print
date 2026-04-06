@@ -29,20 +29,71 @@ dita --input=path/to/your.ditamap \
 
 ## Featured Bootstrap components
 
-The plug-in includes XSL-FO specializations for the following Bootstrap components, allowing you to use the same `outputclass` values as the HTML5 version to achieve a consistent look in print:
+The plug-in includes XSL-FO handling for the following DITA Bootstrap components. You can use these either through the **DITA Bootstrap Specialization** elements to achieve a consistent look in print:
 
-- [Accordions](https://getbootstrap.com/docs/5.3/components/accordion/)
-- [Alerts](https://getbootstrap.com/docs/5.3/components/alerts/)
-- [Badges](https://getbootstrap.com/docs/5.3/components/badge/)
-- [Buttons](https://getbootstrap.com/docs/5.3/components/buttons/)
-- [Cards](https://getbootstrap.com/docs/5.3/components/card/)
-- [Carousels](https://getbootstrap.com/docs/5.3/components/carousel/)
-- [Figures](https://getbootstrap.com/docs/5.3/content/figures/)
-- [Grid layout](https://getbootstrap.com/docs/5.3/layout/grid/)
-- [Icons](https://icons.getbootstrap.com)
-- [List groups](https://getbootstrap.com/docs/5.3/components/list-group/)
-- [Notes](https://getbootstrap.com/docs/5.3/components/alerts/) (Specialized as Bootstrap Alerts)
-- [Tables](https://getbootstrap.com/docs/5.3/content/tables/)
+- [Accordions](https://infotexture.github.io/dita-bootstrap/accordion.html) (`<accordion>`)
+- [Alerts](https://infotexture.github.io/dita-bootstrap/alerts.html) (`<alert>`)
+- [Badges](https://infotexture.github.io/dita-bootstrap/badge.html) (`<badge>`)
+- [Buttons](https://infotexture.github.io/dita-bootstrap/buttons.html) (`<button>`)
+- [Cards](https://infotexture.github.io/dita-bootstrap/card.html) (`<card>`)
+- [Carousels](https://infotexture.github.io/dita-bootstrap/carousel.html) (`<carousel>` as a contact sheet)
+- [Figures](https://infotexture.github.io/dita-bootstrap/figures.html) (`<fig>`)
+- [Grid layout](https://infotexture.github.io/dita-bootstrap/grid.html) (`<grid-row>`, `<grid-col>`)
+- [Icons](https://infotexture.github.io/dita-bootstrap/icons.html) (`<icon>`)
+- [List groups](https://infotexture.github.io/dita-bootstrap/list-group.html) (`<list-group>`)
+- [Notes](https://infotexture.github.io/dita-bootstrap/alerts.html) (`<note>` - as `<alert>`)
+- [Tables](https://infotexture.github.io/dita-bootstrap/tables.html) (`<table>`)
+- [Thumbnails](https://infotexture.github.io/dita-bootstrap/images.html) (`<thumbnail>`)
+
+## Using Bootstrap Specializations
+
+The preferred way to use this plug-in is via the [DITA Bootstrap domain specializations][2]. These provide native DITA elements with specialized attributes for Bootstrap styling:
+
+```xml
+<card color="primary" border="1" rounded="yes">
+  <title>Card Title</title>
+  <p>Card content goes here.</p>
+</card>
+```
+
+The print plug-in interprets these specialized elements and attributes to generate equivalent XSL-FO styling in the PDF output.
+
+### Colors and Borders
+
+Most DITA Bootstrap Specializations, as well as many base DITA elements, support the `color` and `border` attributes to control their appearance:
+
+-   **Color Themes**: Use standard Bootstrap themes such as `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, and `dark`.
+    ```xml
+    <section color="primary">
+      <title>Primary Section</title>
+      <p>This section has a primary background color.</p>
+    </section>
+
+    <alert color="warning">
+      <p>This is a warning alert.</p>
+    </alert>
+    <badge color="success">New</badge>
+    ```
+-   **Border Thickness**: Use numeric values from `1` to `5` to control border width.
+    ```xml
+    <ph border="1">Bordered phrase</ph>
+
+    <card border="3" color="info">
+      <title>Thick Border Card</title>
+      <p>Content...</p>
+    </card>
+    ```
+
+### Thumbnails
+
+The `<thumbnail>` element (a specialization of `<image>`) can be used to add a themed frame around images:
+
+```xml
+<thumbnail href="image.png" color="primary" placement="break"/>
+```
+
+-   **@color**: Sets the border and background theme (e.g., `primary` uses a solid primary border and a subtle primary background).
+-   **@placement**: Use `break` for a centered block-level image or `inline` for flowing text integration.
 
 ## Customizing
 
