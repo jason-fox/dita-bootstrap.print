@@ -158,6 +158,14 @@
     </xsl:if>
   </xsl:template>
 
+  <!-- Process @border-width attribute -->
+  <xsl:template name="processBootstrapBorderWidth">
+    <xsl:param name="attrValue"/>
+    <xsl:if test="$attrValue">
+      <xsl:attribute name="border-width"><xsl:value-of select="$attrValue"/></xsl:attribute>
+    </xsl:if>
+  </xsl:template>
+
   <!-- Process @dir attribute for RTL/LTR direction -->
   <xsl:template name="processBootstrapDirection">
     <xsl:variable name="direction">

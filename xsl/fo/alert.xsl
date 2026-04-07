@@ -25,7 +25,7 @@
       
       <!-- 4. Default Visibility & Rounding -->
       <xsl:attribute name="border-style">solid</xsl:attribute>
-      <xsl:attribute name="border-width">1pt</xsl:attribute>
+      <xsl:attribute name="border-width"><xsl:value-of select="$bootstrap-border-width"/></xsl:attribute>
       <xsl:call-template name="processBootstrapRounded">
         <xsl:with-param name="attrValue" select="(@rounded, 'yes')[1]"/>
       </xsl:call-template>
@@ -48,6 +48,11 @@
       <xsl:if test="@border">
         <xsl:call-template name="processBootstrapBorder">
           <xsl:with-param name="attrValue" select="@border"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="@border-width">
+        <xsl:call-template name="processBootstrapBorderWidth">
+          <xsl:with-param name="attrValue" select="@border-width"/>
         </xsl:call-template>
       </xsl:if>
       <xsl:if test="@width">
