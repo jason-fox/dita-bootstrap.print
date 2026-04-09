@@ -76,7 +76,7 @@
       </xsl:variable>
 
       <!-- Note Title / Icon Prefix -->
-      <fo:inline font-weight="bold">
+      <fo:inline font-weight="bold" color="{$icon-color}">
         <xsl:variable name="type" select="(@type, 'note')[1]"/>
         <xsl:variable name="explicit-icon" select="(@icon, (@otherprops[contains(., 'icon(')], '')[1])[1]"/>
 

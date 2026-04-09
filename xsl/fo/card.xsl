@@ -216,10 +216,22 @@
     match="*[contains(@class, ' bootstrap-d/card ') or (tokenize(@outputclass, ' ') = 'card' and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]/*[contains(@class, ' topic/title ')]"
     priority="5"
   >
+    <xsl:variable name="theme" select="../@color"/>
+    <xsl:variable name="title-color">
+      <xsl:if test="$theme">
+         <xsl:call-template name="getBootstrapAttrValue">
+           <xsl:with-param name="attrSet" select="concat('__bg__', $theme, '-subtle')"/>
+         </xsl:call-template>
+      </xsl:if>
+    </xsl:variable>
+
     <fo:block font-size="14pt" font-weight="bold" margin-bottom="8pt">
+       <xsl:if test="$theme">
+          <xsl:attribute name="color"><xsl:value-of select="$title-color"/></xsl:attribute>
+       </xsl:if>
        <xsl:call-template name="processBootstrapDirection"/>
-                <xsl:apply-templates/>
-             </fo:block>
+       <xsl:apply-templates/>
+    </fo:block>
   </xsl:template>
 
   <!-- Card Images (Ensure 100% width scaling within the row) -->

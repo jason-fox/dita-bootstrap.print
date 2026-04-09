@@ -161,13 +161,6 @@
     </xsl:if>
   </xsl:template>
 
-  <!-- Process @border-width attribute -->
-  <xsl:template name="processBootstrapBorderWidth">
-    <xsl:param name="attrValue"/>
-    <xsl:if test="$attrValue">
-      <xsl:attribute name="border-width"><xsl:value-of select="$attrValue"/></xsl:attribute>
-    </xsl:if>
-  </xsl:template>
 
   <!-- Process @dir attribute for RTL/LTR direction -->
   <xsl:template name="processBootstrapDirection">
@@ -294,6 +287,47 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:if>
+  </xsl:template>
+
+  <!-- Titles within colored components -->
+  <xsl:template match="*[contains(@class, ' topic/title ')][ancestor::*[contains(@class, ' topic/note ')] or ancestor::*[contains(@class, ' bootstrap-d/alert ')] or ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')][@color]]" priority="6">
+      <xsl:variable name="theme">
+        <xsl:choose>
+          <xsl:when test="ancestor::*[contains(@class, ' topic/note ')]/@color"><xsl:value-of select="ancestor::*[contains(@class, ' topic/note ')]/@color"/></xsl:when>
+          <xsl:when test="ancestor::*[contains(@class, ' topic/note ')]">
+            <xsl:call-template name="getNoteTheme">
+               <xsl:with-param name="type" select="(ancestor::*[contains(@class, ' topic/note ')]/@type, 'note')[1]"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="ancestor::*[contains(@class, ' bootstrap-d/alert ')]"><xsl:value-of select="(ancestor::*[contains(@class, ' bootstrap-d/alert ')]/@color, 'secondary')[1]"/></xsl:when>
+          <xsl:when test="ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')]"><xsl:value-of select="ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')][1]/@color"/></xsl:when>
+        </xsl:choose>
+      </xsl:variable>
+
+      <xsl:variable name="subtleColor">
+         <xsl:if test="$theme != ''">
+            <xsl:call-template name="getBootstrapAttrValue">
+               <xsl:with-param name="attrSet" select="concat('__bg__', $theme, '-subtle')"/>
+            </xsl:call-template>
+         </xsl:if>
+      </xsl:variable>
+
+      <xsl:choose>
+         <xsl:when test="parent::*[contains(@class, ' topic/example ')]">
+            <fo:block xsl:use-attribute-sets="example.title">
+               <xsl:if test="$subtleColor != ''"><xsl:attribute name="color"><xsl:value-of select="$subtleColor"/></xsl:attribute></xsl:if>
+               <xsl:call-template name="commonattributes"/>
+               <xsl:apply-templates/>
+            </fo:block>
+         </xsl:when>
+         <xsl:otherwise>
+            <fo:block xsl:use-attribute-sets="section.title">
+               <xsl:if test="$subtleColor != ''"><xsl:attribute name="color"><xsl:value-of select="$subtleColor"/></xsl:attribute></xsl:if>
+               <xsl:call-template name="commonattributes"/>
+               <xsl:apply-templates/>
+            </fo:block>
+         </xsl:otherwise>
+      </xsl:choose>
   </xsl:template>
 
   <!-- Baseline Section and Div Support -->

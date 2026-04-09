@@ -40,47 +40,60 @@
             <xsl:variable name="theme" select="$theme-container/@color"/>
             <xsl:variable name="container-type" select="local-name($theme-container)"/>
 
-            <xsl:variable name="attrSetName">
-              <xsl:choose>
-                <!-- Button: use the button-specific attribute set to get the text color -->
-                <xsl:when test="$container-type = 'button'">
-                  <xsl:value-of select="concat('__btn__', ($theme, 'primary')[1])"/>
+            <xsl:choose>
+                <!-- Xref: get the color directly from bootstrap-settings -->
+                <xsl:when test="contains($theme-container/@class, ' topic/xref ')">
+                   <xsl:variable name="explicitVar" select="concat('bootstrap-', ($theme, 'primary')[1])"/>
+                   <xsl:choose>
+                      <xsl:when test="$bootstrap-settings/entry[@name = $explicitVar]">
+                         <xsl:value-of select="$bootstrap-settings/entry[@name = $explicitVar]"/>
+                      </xsl:when>
+                      <xsl:otherwise><xsl:value-of select="($theme, 'currentColor')[1]"/></xsl:otherwise>
+                   </xsl:choose>
                 </xsl:when>
-                <!-- Badge: use the badge-specific attribute set to get the text color -->
-                <xsl:when test="$container-type = 'badge'">
-                  <xsl:value-of select="concat('__badge__', ($theme, 'primary')[1])"/>
-                </xsl:when>
-                <!-- Note/Alert: use the text color from the -subtle background variant -->
-                <xsl:when test="$container-type = 'note' or $container-type = 'alert'">
-                  <xsl:variable name="note-theme">
+                <xsl:otherwise>
+                   <xsl:variable name="attrSetName">
                      <xsl:choose>
-                        <xsl:when test="$theme"><xsl:value-of select="$theme"/></xsl:when>
-                        <xsl:otherwise>
-                           <xsl:call-template name="getNoteTheme">
-                              <xsl:with-param name="type" select="$theme-container/@type"/>
-                           </xsl:call-template>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                  </xsl:variable>
-                  <xsl:value-of select="concat('__bg__', $note-theme, '-subtle')"/>
-                </xsl:when>
-              </xsl:choose>
-            </xsl:variable>
-
-            <xsl:if test="$attrSetName != ''">
-              <xsl:call-template name="getBootstrapAttrValue">
-                <xsl:with-param name="attrSet" select="$attrSetName"/>
-              </xsl:call-template>
-            </xsl:if>
+                       <!-- Button: use the button-specific attribute set to get the text color -->
+                       <xsl:when test="$container-type = 'button'">
+                         <xsl:value-of select="concat('__btn__', ($theme, 'primary')[1])"/>
+                       </xsl:when>
+                       <!-- Badge: use the badge-specific attribute set to get the text color -->
+                       <xsl:when test="$container-type = 'badge'">
+                         <xsl:value-of select="concat('__badge__', ($theme, 'primary')[1])"/>
+                       </xsl:when>
+                       <!-- Note/Alert: use the text color from the -subtle background variant -->
+                       <xsl:when test="$container-type = 'note' or $container-type = 'alert'">
+                         <xsl:variable name="note-theme">
+                            <xsl:choose>
+                               <xsl:when test="$theme"><xsl:value-of select="$theme"/></xsl:when>
+                               <xsl:otherwise>
+                                  <xsl:call-template name="getNoteTheme">
+                                     <xsl:with-param name="type" select="$theme-container/@type"/>
+                                  </xsl:call-template>
+                               </xsl:otherwise>
+                            </xsl:choose>
+                         </xsl:variable>
+                         <xsl:value-of select="concat('__bg__', $note-theme, '-subtle')"/>
+                       </xsl:when>
+                       </xsl:choose>
+                     </xsl:variable>
+                     <xsl:if test="$attrSetName != ''">
+                       <xsl:call-template name="getBootstrapAttrValue">
+                         <xsl:with-param name="attrSet" select="$attrSetName"/>
+                       </xsl:call-template>
+                     </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
 
           <!-- 3. Fallback -->
-          <xsl:otherwise>#000000</xsl:otherwise>
+          <xsl:otherwise>currentColor</xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
       
       <!-- Use instream-foreign-object and forcefully inject the target color into the SVG -->
-      <fo:instream-foreign-object content-height="1.1em" content-width="auto">
+      <fo:instream-foreign-object content-height="1.1em" content-width="auto" text-decoration="no-underline">
         <xsl:attribute name="baseline-shift">
            <xsl:choose>
               <!-- If icon is solo in a button/badge, don't shift (to keep it centered) -->

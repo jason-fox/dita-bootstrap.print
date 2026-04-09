@@ -54,11 +54,6 @@
           <xsl:with-param name="attrValue" select="@border"/>
         </xsl:call-template>
       </xsl:if>
-      <xsl:if test="@border-width">
-        <xsl:call-template name="processBootstrapBorderWidth">
-          <xsl:with-param name="attrValue" select="@border-width"/>
-        </xsl:call-template>
-      </xsl:if>
       <xsl:if test="@width">
         <xsl:call-template name="processBootstrapWidth">
           <xsl:with-param name="attrValue" select="@width"/>
