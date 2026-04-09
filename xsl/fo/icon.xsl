@@ -42,7 +42,7 @@
 
             <xsl:choose>
                 <!-- Xref: get the color directly from bootstrap-settings -->
-                <xsl:when test="contains($theme-container/@class, ' topic/xref ')">
+                <xsl:when test="$container-type = 'xref'">
                    <xsl:variable name="explicitVar" select="concat('bootstrap-', ($theme, 'primary')[1])"/>
                    <xsl:choose>
                       <xsl:when test="$bootstrap-settings/entry[@name = $explicitVar]">
