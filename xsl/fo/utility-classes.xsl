@@ -41,7 +41,9 @@
     <xsl:param name="attrSet"/>
     <xsl:param name="attrName" select="'color'"/>
     <xsl:param name="path" select="'../../cfg/fo/attrs/bootstrap-attr.xsl'"/>
-    <xsl:variable name="attr" select="document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName]"/>
+    <xsl:variable name="custom-attr" select="if (doc-available('cfg:fo/attrs/custom.xsl')) then document('cfg:fo/attrs/custom.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName] else ()"/>
+    <xsl:variable name="theme-attr" select="if (not($custom-attr) and doc-available('cfg:fo/attrs/dita-ot.xsl')) then document('cfg:fo/attrs/dita-ot.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName] else ()"/>
+    <xsl:variable name="attr" select="($custom-attr, $theme-attr, document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName])[1]"/>
     <xsl:choose>
       <xsl:when test="$attr/xsl:value-of">
         <xsl:variable name="select" select="$attr/xsl:value-of/@select"/>
@@ -59,7 +61,11 @@
     <xsl:param name="attrSet"/>
     <xsl:param name="path" select="'../../cfg/fo/attrs/bootstrap-attr.xsl'"/>
 
-    <xsl:for-each select="document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute">
+    <xsl:variable name="custom-attrs" select="if (doc-available('cfg:fo/attrs/custom.xsl')) then document('cfg:fo/attrs/custom.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute else ()"/>
+    <xsl:variable name="theme-attrs" select="if (not($custom-attrs) and doc-available('cfg:fo/attrs/dita-ot.xsl')) then document('cfg:fo/attrs/dita-ot.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute else ()"/>
+    <xsl:variable name="attrs" select="(document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute, $theme-attrs, $custom-attrs)"/>
+
+    <xsl:for-each select="$attrs">
       <xsl:attribute name="{@name}">
         <xsl:for-each select="node()">
           <xsl:choose>
