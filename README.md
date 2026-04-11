@@ -13,8 +13,8 @@ A plug-in for [DITA Open Toolkit][1] that adds PDF print output to the [DITA Boo
 Use the `dita` command to add this plug-in and its requirements to your DITA Open Toolkit installation:
 
 ```console
-dita install net.infotexture.dita-bootstrap
-dita install https://github.com/infotexture/dita-bootstrap.pdf/archive/master.zip
+dita install dita-bootstrap.html
+dita install https://github.com/dita-bootstrap/dita-bootstrap.pdf/archive/master.zip
 ```
 
 ## Using
@@ -30,19 +30,19 @@ dita --input=path/to/your.ditamap \
 
 The plug-in includes XSL-FO handling for the following DITA Bootstrap components. You can use these through the **DITA Bootstrap Specialization** elements to achieve a consistent look in print:
 
-- [Accordions](https://infotexture.github.io/dita-bootstrap/accordion.html) (`<accordion>`)
-- [Alerts](https://infotexture.github.io/dita-bootstrap/alerts.html) (`<alert>`)
-- [Badges](https://infotexture.github.io/dita-bootstrap/badge.html) (`<badge>`)
-- [Buttons](https://infotexture.github.io/dita-bootstrap/buttons.html) (`<button>`)
-- [Cards](https://infotexture.github.io/dita-bootstrap/card.html) (`<card>`)
-- [Carousels](https://infotexture.github.io/dita-bootstrap/carousel.html) (`<carousel>` as a contact sheet)
-- [Figures](https://infotexture.github.io/dita-bootstrap/figures.html) (`<fig>`)
-- [Grid layout](https://infotexture.github.io/dita-bootstrap/grid.html) (`<grid-row>`, `<grid-col>`)
-- [Icons](https://infotexture.github.io/dita-bootstrap/icons.html) (`<icon>`)
-- [List groups](https://infotexture.github.io/dita-bootstrap/list-group.html) (`<list-group>`)
-- [Notes](https://infotexture.github.io/dita-bootstrap/alerts.html) (`<note>` - as `<alert>`)
-- [Tables](https://infotexture.github.io/dita-bootstrap/tables.html) (`<table>`)
-- [Thumbnails](https://infotexture.github.io/dita-bootstrap/images.html) (`<thumbnail>`)
+- [Accordions](https://dita-bootstrap.github.io/dita-bootstrap/accordion.html) (`<accordion>`)
+- [Alerts](https://dita-bootstrap.github.io/dita-bootstrap/alerts.html) (`<alert>`)
+- [Badges](https://dita-bootstrap.github.io/dita-bootstrap/badge.html) (`<badge>`)
+- [Buttons](https://dita-bootstrap.github.io/dita-bootstrap/buttons.html) (`<button>`)
+- [Cards](https://dita-bootstrap.github.io/dita-bootstrap/card.html) (`<card>`)
+- [Carousels](https://dita-bootstrap.github.io/dita-bootstrap/carousel.html) (`<carousel>` as a contact sheet)
+- [Figures](https://dita-bootstrap.github.io/dita-bootstrap/figures.html) (`<fig>`)
+- [Grid layout](https://dita-bootstrap.github.io/dita-bootstrap/grid.html) (`<grid-row>`, `<grid-col>`)
+- [Icons](https://dita-bootstrap.github.io/dita-bootstrap/icons.html) (`<icon>`)
+- [List groups](https://dita-bootstrap.github.io/dita-bootstrap/list-group.html) (`<list-group>`)
+- [Notes](https://dita-bootstrap.github.io/dita-bootstrap/alerts.html) (`<note>` - as `<alert>`)
+- [Tables](https://dita-bootstrap.github.io/dita-bootstrap/tables.html) (`<table>`)
+- [Thumbnails](https://dita-bootstrap.github.io/dita-bootstrap/images.html) (`<thumbnail>`)
 
 ## Using Bootstrap Specializations
 
@@ -110,4 +110,4 @@ For more information on the available classes, see the [main DITA Bootstrap docu
 [Apache 2.0](LICENSE) © 2026 Jason Fox
 
 [1]: http://www.dita-ot.org
-[2]: https://github.com/infotexture/dita-bootstrap
+[2]: https://github.com/dita-bootstrap/dita-bootstrap.html
