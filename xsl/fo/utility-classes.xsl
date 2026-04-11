@@ -709,7 +709,15 @@
       <!-- Default: No decoration -->
   </xsl:template>
 
-  <!-- Global Shadow Wrapper for Neo-Brutalist shadow styling -->
+  <!-- Remove borders -->
+  <xsl:template name="bootstrapBorderless">
+    <xsl:if test="not(@outline = 'yes' or @border or @bordercolor or contains(@outputclass, 'border') or contains(@class, ' bootstrap-d/card '))">
+      <xsl:attribute name="border-width">0pt</xsl:attribute>
+      <xsl:attribute name="border-style">none</xsl:attribute>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- Global Shadow Wrapper for shadow styling -->
   <xsl:template match="*[@shadow][not(@shadow = 'none') and not(@shadow = 'no')][not(contains(@class, ' bootstrap-d/card ') or tokenize(@outputclass, ' ') = 'card')]" priority="10">
     <xsl:variable name="inner">
       <xsl:next-match/>
