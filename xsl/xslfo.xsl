@@ -27,5 +27,6 @@
   <xsl:include href="fo/list-group.xsl"/>
   <xsl:include href="fo/note.xsl"/>
   <xsl:include href="fo/tables.xsl"/>
+  <xsl:include href="fo/topic.xsl"/>
 
 </xsl:stylesheet>

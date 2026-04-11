@@ -792,6 +792,35 @@
         select="$bootstrap-h6-margin-bottom"
       /></xsl:attribute></xsl:attribute-set>
 
+  <!-- Topic Headings Overrides -->
+  <xsl:attribute-set name="topic.title" use-attribute-sets="h1">
+    <xsl:attribute name="border-after-width">1pt</xsl:attribute>
+    <xsl:attribute name="border-after-style">solid</xsl:attribute>
+    <xsl:attribute name="border-after-color"><xsl:value-of select="$bootstrap-border-color"/></xsl:attribute>
+    <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="topic.topic.title" use-attribute-sets="h2">
+    <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="topic.topic.topic.title" use-attribute-sets="h3">
+    <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="topic.topic.topic.topic.title" use-attribute-sets="h4">
+    <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="topic.topic.topic.topic.topic.title" use-attribute-sets="h5">
+    <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="topic.topic.topic.topic.topic.topic.title" use-attribute-sets="h6">
+    <xsl:attribute name="keep-with-next.within-column">always</xsl:attribute>
+  </xsl:attribute-set>
+
+
   <!-- Display utilities (display-1 to display-6) -->
   <xsl:attribute-set name="display-1"><xsl:attribute name="font-size"><xsl:value-of
         select="$bootstrap-display-1-font-size"
