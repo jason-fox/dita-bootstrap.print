@@ -113,35 +113,35 @@
   <!-- Standard Bootstrap Background Colors -->
   <xsl:attribute-set name="__bg__primary">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-primary"/></xsl:attribute>
-    <xsl:attribute name="color">#ffffff</xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-primary-color"/></xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__secondary">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-secondary"/></xsl:attribute>
-    <xsl:attribute name="color">#ffffff</xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-secondary-color"/></xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__success">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-success"/></xsl:attribute>
-    <xsl:attribute name="color">#ffffff</xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-success-color"/></xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__danger">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-danger"/></xsl:attribute>
-    <xsl:attribute name="color">#ffffff</xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-danger-color"/></xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__warning">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-warning"/></xsl:attribute>
-    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-dark"/></xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-warning-color"/></xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__info">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-info"/></xsl:attribute>
-    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-dark"/></xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-info-color"/></xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__light">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-light"/></xsl:attribute>
-    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-dark"/></xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-light-color"/></xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="__bg__dark">
     <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-dark"/></xsl:attribute>
-    <xsl:attribute name="color">#ffffff</xsl:attribute>
+    <xsl:attribute name="color"><xsl:value-of select="$bootstrap-btn-dark-color"/></xsl:attribute>
   </xsl:attribute-set>
   <!-- Subtle Background Colors (for Alerts, Callouts, etc.) -->
   <xsl:attribute-set name="__bg__primary-subtle">
