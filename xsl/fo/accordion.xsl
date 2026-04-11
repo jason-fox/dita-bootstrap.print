@@ -70,12 +70,9 @@
                   </xsl:call-template>
                </xsl:when>
                 <xsl:otherwise>
-                  <!-- Default background matches striped tables -->
+                  <!-- Default background matches Bootstrap 5 primary-subtle -->
                   <xsl:call-template name="processBootstrapAttrSetReflection">
-                    <xsl:with-param name="attrSet" select="'table-striped'"/>
-                  </xsl:call-template>
-                  <xsl:call-template name="processBootstrapAttrSetReflection">
-                    <xsl:with-param name="attrSet" select="'__color__dark'"/>
+                    <xsl:with-param name="attrSet" select="'__bg__primary-subtle'"/>
                   </xsl:call-template>
                 </xsl:otherwise>
             </xsl:choose>
