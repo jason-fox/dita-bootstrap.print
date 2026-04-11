@@ -869,5 +869,10 @@
   <xsl:attribute-set name="table-striped">
       <xsl:attribute name="background-color"><xsl:value-of select="$bootstrap-table-striped-color"/></xsl:attribute>
   </xsl:attribute-set>
+  
+  <xsl:attribute-set name="lead">
+      <xsl:attribute name="font-size"><xsl:value-of select="$bootstrap-lead-font-size"/></xsl:attribute>
+      <xsl:attribute name="font-weight"><xsl:value-of select="$bootstrap-lead-font-weight"/></xsl:attribute>
+  </xsl:attribute-set>
 
 </xsl:stylesheet>

@@ -39,4 +39,17 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template match="*[contains(@class, ' topic/shortdesc ')]">
+    <fo:block xsl:use-attribute-sets="topic__shortdesc">
+      <xsl:if test="parent::*[contains(@class,' topic/abstract ')]">
+          <xsl:attribute name="start-indent">from-parent(start-indent)</xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="processBootstrapAttrSetReflection">
+          <xsl:with-param name="attrSet" select="'lead'"/>
+      </xsl:call-template>
+      <xsl:call-template name="commonattributes"/>
+      <xsl:apply-templates/>
+    </fo:block>
+  </xsl:template>
+
 </xsl:stylesheet>

@@ -141,6 +141,8 @@
   <xsl:variable name="bootstrap-body-color">#212529</xsl:variable>
   <xsl:variable name="bootstrap-body-bg">#ffffff</xsl:variable>
   <xsl:variable name="bootstrap-table-striped-color">#f2f2f2</xsl:variable>
+  <xsl:variable name="bootstrap-lead-font-size">1.25em</xsl:variable>
+  <xsl:variable name="bootstrap-lead-font-weight">300</xsl:variable>
 
   <!-- PrismJS Decorator defaults -->
   <xsl:variable name="prismjs.text.color" select="$bootstrap-body-color"/>

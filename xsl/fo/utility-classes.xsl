@@ -268,7 +268,7 @@
                         starts-with($token, 'px-') or starts-with($token, 'py-') or starts-with($token, 'pt-') or starts-with($token, 'pb-') or starts-with($token, 'ps-') or starts-with($token, 'pe-') or
                         starts-with($token, 'mx-') or starts-with($token, 'my-') or starts-with($token, 'mt-') or starts-with($token, 'mb-') or starts-with($token, 'ms-') or starts-with($token, 'me-') or
                         $token = 'h1' or $token = 'h2' or $token = 'h3' or $token = 'h4' or $token = 'h5' or $token = 'h6' or
-                        starts-with($token, 'display-')"
+                        starts-with($token, 'display-') or $token = 'lead'"
           >
             <xsl:call-template name="processBootstrapAttrSetReflection">
               <xsl:with-param name="attrSet" select="$token"/>

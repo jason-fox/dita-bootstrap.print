@@ -137,6 +137,8 @@
     <entry name="bootstrap-display-line-height"><xsl:value-of select="$bootstrap-display-line-height"/></entry>
 
     <entry name="bootstrap-table-striped-color"><xsl:value-of select="$bootstrap-table-striped-color"/></entry>
+    <entry name="bootstrap-lead-font-size"><xsl:value-of select="$bootstrap-lead-font-size"/></entry>
+    <entry name="bootstrap-lead-font-weight"><xsl:value-of select="$bootstrap-lead-font-weight"/></entry>
     
     <!-- PrismJS Decorator -->
     <entry name="prismjs.text.color"><xsl:value-of select="$prismjs.text.color"/></entry>
