@@ -30,7 +30,7 @@ jobs:
           install: |
             apt-get update -q
             export DEBIAN_FRONTEND=noninteractive
-            apt-get install -qy --no-install-recommends nodejs
+            apt-get install -qy --no-install-recommends nodejs libfontconfig1
             nodejs -v
           plugins: |
             fox.jason.extend.css
