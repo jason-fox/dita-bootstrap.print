@@ -30,7 +30,9 @@
       <xsl:when test="$type = 'note' or $type = 'notice' or $type = 'remember'">info</xsl:when>
       <xsl:when test="$type = 'tip' or $type = 'fastpath'">success</xsl:when>
       <xsl:when test="$type = 'important'">primary</xsl:when>
-      <xsl:when test="$type = 'warning' or $type = 'caution' or $type = 'restriction' or $type = 'trouble'">warning</xsl:when>
+      <xsl:when
+        test="$type = 'warning' or $type = 'caution' or $type = 'restriction' or $type = 'trouble'"
+      >warning</xsl:when>
       <xsl:when test="$type = 'danger'">danger</xsl:when>
       <xsl:otherwise>secondary</xsl:otherwise>
     </xsl:choose>
@@ -41,13 +43,25 @@
     <xsl:param name="attrSet"/>
     <xsl:param name="attrName" select="'color'"/>
     <xsl:param name="path" select="'../../cfg/fo/attrs/bootstrap-attr.xsl'"/>
-    <xsl:variable name="custom-attr" select="if (doc-available('cfg:fo/attrs/custom.xsl')) then document('cfg:fo/attrs/custom.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName] else ()"/>
-    <xsl:variable name="theme-attr" select="if (not($custom-attr) and doc-available('cfg:fo/attrs/dita-ot.xsl')) then document('cfg:fo/attrs/dita-ot.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName] else ()"/>
-    <xsl:variable name="attr" select="($custom-attr, $theme-attr, document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName])[1]"/>
+    <xsl:variable
+      name="custom-attr"
+      select="if (doc-available('cfg:fo/attrs/custom.xsl')) then document('cfg:fo/attrs/custom.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName] else ()"
+    />
+    <xsl:variable
+      name="theme-attr"
+      select="if (not($custom-attr) and doc-available('cfg:fo/attrs/dita-ot.xsl')) then document('cfg:fo/attrs/dita-ot.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName] else ()"
+    />
+    <xsl:variable
+      name="attr"
+      select="($custom-attr, $theme-attr, document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute[@name = $attrName])[1]"
+    />
     <xsl:choose>
       <xsl:when test="$attr/xsl:value-of">
         <xsl:variable name="select" select="$attr/xsl:value-of/@select"/>
-        <xsl:variable name="varName" select="if (starts-with($select, '$')) then substring-after($select, '$') else $select"/>
+        <xsl:variable
+          name="varName"
+          select="if (starts-with($select, '$')) then substring-after($select, '$') else $select"
+        />
         <xsl:value-of select="$bootstrap-settings/entry[@name = $varName]"/>
       </xsl:when>
       <xsl:otherwise>
@@ -61,9 +75,18 @@
     <xsl:param name="attrSet"/>
     <xsl:param name="path" select="'../../cfg/fo/attrs/bootstrap-attr.xsl'"/>
 
-    <xsl:variable name="custom-attrs" select="if (doc-available('cfg:fo/attrs/custom.xsl')) then document('cfg:fo/attrs/custom.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute else ()"/>
-    <xsl:variable name="theme-attrs" select="if (not($custom-attrs) and doc-available('cfg:fo/attrs/dita-ot.xsl')) then document('cfg:fo/attrs/dita-ot.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute else ()"/>
-    <xsl:variable name="attrs" select="(document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute, $theme-attrs, $custom-attrs)"/>
+    <xsl:variable
+      name="custom-attrs"
+      select="if (doc-available('cfg:fo/attrs/custom.xsl')) then document('cfg:fo/attrs/custom.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute else ()"
+    />
+    <xsl:variable
+      name="theme-attrs"
+      select="if (not($custom-attrs) and doc-available('cfg:fo/attrs/dita-ot.xsl')) then document('cfg:fo/attrs/dita-ot.xsl')//xsl:attribute-set[@name = $attrSet]/xsl:attribute else ()"
+    />
+    <xsl:variable
+      name="attrs"
+      select="(document($path)//xsl:attribute-set[@name = $attrSet]/xsl:attribute, $theme-attrs, $custom-attrs)"
+    />
 
     <xsl:for-each select="$attrs">
       <xsl:attribute name="{@name}">
@@ -156,7 +179,10 @@
   <xsl:template name="processBootstrapBorderColor">
     <xsl:param name="attrValue"/>
     <xsl:if test="$attrValue">
-      <xsl:variable name="isZeroWidth" select="normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', '0in', '0mm', '0cm', '0.0pt', '0.0px')"/>
+      <xsl:variable
+        name="isZeroWidth"
+        select="normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', '0in', '0mm', '0cm', '0.0pt', '0.0px')"
+      />
       <xsl:if test="not($isZeroWidth)">
         <xsl:attribute name="border-style">solid</xsl:attribute>
         <xsl:attribute name="border-width"><xsl:value-of select="$bootstrap-border-width"/></xsl:attribute>
@@ -296,17 +322,28 @@
   </xsl:template>
 
   <!-- Titles within colored components -->
-  <xsl:template match="*[contains(@class, ' topic/title ')][ancestor::*[contains(@class, ' topic/note ')] or ancestor::*[contains(@class, ' bootstrap-d/alert ')] or ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')][@color]]" priority="6">
+  <xsl:template
+    match="*[contains(@class, ' topic/title ')][ancestor::*[contains(@class, ' topic/note ')] or ancestor::*[contains(@class, ' bootstrap-d/alert ')] or ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')][@color]]"
+    priority="6"
+  >
       <xsl:variable name="theme">
         <xsl:choose>
-          <xsl:when test="ancestor::*[contains(@class, ' topic/note ')]/@color"><xsl:value-of select="ancestor::*[contains(@class, ' topic/note ')]/@color"/></xsl:when>
+          <xsl:when test="ancestor::*[contains(@class, ' topic/note ')]/@color"><xsl:value-of
+            select="ancestor::*[contains(@class, ' topic/note ')]/@color"
+          /></xsl:when>
           <xsl:when test="ancestor::*[contains(@class, ' topic/note ')]">
             <xsl:call-template name="getNoteTheme">
                <xsl:with-param name="type" select="(ancestor::*[contains(@class, ' topic/note ')]/@type, 'note')[1]"/>
             </xsl:call-template>
           </xsl:when>
-          <xsl:when test="ancestor::*[contains(@class, ' bootstrap-d/alert ')]"><xsl:value-of select="(ancestor::*[contains(@class, ' bootstrap-d/alert ')]/@color, 'secondary')[1]"/></xsl:when>
-          <xsl:when test="ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')]"><xsl:value-of select="ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')][1]/@color"/></xsl:when>
+          <xsl:when test="ancestor::*[contains(@class, ' bootstrap-d/alert ')]"><xsl:value-of
+            select="(ancestor::*[contains(@class, ' bootstrap-d/alert ')]/@color, 'secondary')[1]"
+          /></xsl:when>
+          <xsl:when
+          test="ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')]"
+        ><xsl:value-of
+            select="ancestor::*[contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')][1]/@color"
+          /></xsl:when>
         </xsl:choose>
       </xsl:variable>
 
@@ -321,14 +358,18 @@
       <xsl:choose>
          <xsl:when test="parent::*[contains(@class, ' topic/example ')]">
             <fo:block xsl:use-attribute-sets="example.title">
-               <xsl:if test="$subtleColor != ''"><xsl:attribute name="color"><xsl:value-of select="$subtleColor"/></xsl:attribute></xsl:if>
+               <xsl:if test="$subtleColor != ''"><xsl:attribute name="color"><xsl:value-of
+                select="$subtleColor"
+              /></xsl:attribute></xsl:if>
                <xsl:call-template name="commonattributes"/>
                <xsl:apply-templates/>
             </fo:block>
          </xsl:when>
          <xsl:otherwise>
             <fo:block xsl:use-attribute-sets="section.title">
-               <xsl:if test="$subtleColor != ''"><xsl:attribute name="color"><xsl:value-of select="$subtleColor"/></xsl:attribute></xsl:if>
+               <xsl:if test="$subtleColor != ''"><xsl:attribute name="color"><xsl:value-of
+                select="$subtleColor"
+              /></xsl:attribute></xsl:if>
                <xsl:call-template name="commonattributes"/>
                <xsl:apply-templates/>
             </fo:block>
@@ -711,14 +752,19 @@
 
   <!-- Remove borders -->
   <xsl:template name="bootstrapBorderless">
-    <xsl:if test="not(@outline = 'yes' or @border or @bordercolor or contains(@outputclass, 'border') or contains(@class, ' bootstrap-d/card '))">
+    <xsl:if
+      test="not(@outline = 'yes' or @border or @bordercolor or contains(@outputclass, 'border') or contains(@class, ' bootstrap-d/card '))"
+    >
       <xsl:attribute name="border-width">0pt</xsl:attribute>
       <xsl:attribute name="border-style">none</xsl:attribute>
     </xsl:if>
   </xsl:template>
 
   <!-- Global Shadow Wrapper for shadow styling -->
-  <xsl:template match="*[@shadow][not(@shadow = 'none') and not(@shadow = 'no')][not(contains(@class, ' bootstrap-d/card ') or tokenize(@outputclass, ' ') = 'card')]" priority="10">
+  <xsl:template
+    match="*[@shadow][not(@shadow = 'none') and not(@shadow = 'no')][not(contains(@class, ' bootstrap-d/card ') or tokenize(@outputclass, ' ') = 'card')]"
+    priority="10"
+  >
     <xsl:variable name="inner">
       <xsl:next-match/>
     </xsl:variable>
@@ -777,7 +823,9 @@
             <xsl:attribute name="width"><xsl:value-of select="$inner/*[1]/@width"/></xsl:attribute>
           </xsl:if>
           <xsl:if test="$inner/*[1]/@inline-progression-dimension">
-            <xsl:attribute name="inline-progression-dimension"><xsl:value-of select="$inner/*[1]/@inline-progression-dimension"/></xsl:attribute>
+            <xsl:attribute name="inline-progression-dimension"><xsl:value-of
+                select="$inner/*[1]/@inline-progression-dimension"
+              /></xsl:attribute>
           </xsl:if>
           
           <xsl:call-template name="processBootstrapSpacing">
@@ -797,9 +845,13 @@
               <!-- sm: 2 diffuse layers -->
               <xsl:when test="$shadow-val = 'sm'">
                 <fo:block background-color="#eeeeee" padding-bottom="1.5pt" padding-right="3pt">
-                  <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                  <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                        select="$inner-border-radius"
+                      /></xsl:attribute></xsl:if>
                   <fo:block background-color="#d4d4d4" padding-bottom="0.5pt" padding-right="1pt">
-                    <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                    <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                          select="$inner-border-radius"
+                        /></xsl:attribute></xsl:if>
                     <xsl:apply-templates select="$inner/node()" mode="strip-margin"/>
                   </fo:block>
                 </fo:block>
@@ -808,21 +860,37 @@
               <!-- lg: 8 diffuse layers (12pt right / 6pt bottom) -->
               <xsl:when test="$shadow-val = 'lg'">
                 <fo:block background-color="#f6f6f6" padding-bottom="6pt" padding-right="12pt">
-                  <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                  <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                        select="$inner-border-radius"
+                      /></xsl:attribute></xsl:if>
                   <fo:block background-color="#f2f2f2" padding-bottom="5pt" padding-right="10pt">
-                    <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                    <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                          select="$inner-border-radius"
+                        /></xsl:attribute></xsl:if>
                     <fo:block background-color="#eeeeee" padding-bottom="4pt" padding-right="8pt">
-                      <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                      <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                            select="$inner-border-radius"
+                          /></xsl:attribute></xsl:if>
                       <fo:block background-color="#e8e8e8" padding-bottom="3pt" padding-right="6pt">
-                        <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                        <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                              select="$inner-border-radius"
+                            /></xsl:attribute></xsl:if>
                         <fo:block background-color="#e0e0e0" padding-bottom="2pt" padding-right="4pt">
-                          <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                          <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                                select="$inner-border-radius"
+                              /></xsl:attribute></xsl:if>
                           <fo:block background-color="#dcdcdc" padding-bottom="1.5pt" padding-right="3pt">
-                            <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                            <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                                  select="$inner-border-radius"
+                                /></xsl:attribute></xsl:if>
                             <fo:block background-color="#d8d8d8" padding-bottom="1pt" padding-right="2pt">
-                              <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                              <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                                    select="$inner-border-radius"
+                                  /></xsl:attribute></xsl:if>
                               <fo:block background-color="#d4d4d4" padding-bottom="0.5pt" padding-right="1pt">
-                                <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                                <xsl:if test="$inner-border-radius"><xsl:attribute
+                                    name="fox:border-radius"
+                                  ><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
                                 <xsl:apply-templates select="$inner/node()" mode="strip-margin"/>
                               </fo:block>
                             </fo:block>
@@ -837,17 +905,29 @@
               <!-- md / yes / default: 6 diffuse layers (6pt right / 3pt bottom, 1pt right steps) -->
               <xsl:otherwise>
                 <fo:block background-color="#f4f4f4" padding-bottom="3pt" padding-right="6pt">
-                  <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                  <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                        select="$inner-border-radius"
+                      /></xsl:attribute></xsl:if>
                   <fo:block background-color="#eeeeee" padding-bottom="2.5pt" padding-right="5pt">
-                    <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                    <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                          select="$inner-border-radius"
+                        /></xsl:attribute></xsl:if>
                     <fo:block background-color="#e8e8e8" padding-bottom="2pt" padding-right="4pt">
-                      <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                      <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                            select="$inner-border-radius"
+                          /></xsl:attribute></xsl:if>
                       <fo:block background-color="#e0e0e0" padding-bottom="1.5pt" padding-right="3pt">
-                        <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                        <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                              select="$inner-border-radius"
+                            /></xsl:attribute></xsl:if>
                         <fo:block background-color="#d8d8d8" padding-bottom="1pt" padding-right="2pt">
-                          <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                          <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                                select="$inner-border-radius"
+                              /></xsl:attribute></xsl:if>
                           <fo:block background-color="#d4d4d4" padding-bottom="0.5pt" padding-right="1pt">
-                            <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of select="$inner-border-radius"/></xsl:attribute></xsl:if>
+                            <xsl:if test="$inner-border-radius"><xsl:attribute name="fox:border-radius"><xsl:value-of
+                                  select="$inner-border-radius"
+                                /></xsl:attribute></xsl:if>
                             <xsl:apply-templates select="$inner/node()" mode="strip-margin"/>
                           </fo:block>
                         </fo:block>
@@ -874,14 +954,20 @@
 
   <!-- Remove margin and explicit widths from the root fo:block of the processed inner tree -->
   <!-- For nested elements (non-root), all attributes pass through unchanged -->
-  <xsl:template match="fo:block/@margin | fo:block/@margin-top | fo:block/@margin-bottom | fo:block/@margin-left | fo:block/@margin-right | fo:block/@width | fo:block/@inline-progression-dimension" mode="strip-margin">
+  <xsl:template
+    match="fo:block/@margin | fo:block/@margin-top | fo:block/@margin-bottom | fo:block/@margin-left | fo:block/@margin-right | fo:block/@width | fo:block/@inline-progression-dimension"
+    mode="strip-margin"
+  >
     <xsl:if test="count(../ancestor::*) &gt; 1">
       <xsl:copy/>
     </xsl:if>
   </xsl:template>
 
   <!-- For fo:table: only strip margin/space attrs at root level, keep width -->
-  <xsl:template match="fo:table/@margin | fo:table/@margin-top | fo:table/@margin-bottom | fo:table/@margin-left | fo:table/@margin-right | fo:table/@space-before | fo:table/@space-after" mode="strip-margin">
+  <xsl:template
+    match="fo:table/@margin | fo:table/@margin-top | fo:table/@margin-bottom | fo:table/@margin-left | fo:table/@margin-right | fo:table/@space-before | fo:table/@space-after"
+    mode="strip-margin"
+  >
     <xsl:if test="count(../ancestor::*) &gt; 1">
       <xsl:copy/>
     </xsl:if>

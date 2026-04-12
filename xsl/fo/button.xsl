@@ -125,7 +125,9 @@
         <xsl:attribute name="border-width">
            <xsl:choose>
              <!-- Outline buttons require a border to be visible; enforce 1pt if theme globally suppresses borders -->
-             <xsl:when test="@outline = 'yes' and normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', 'none', '')">1pt</xsl:when>
+             <xsl:when
+              test="@outline = 'yes' and normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', 'none', '')"
+            >1pt</xsl:when>
              <xsl:otherwise><xsl:value-of select="$bootstrap-border-width"/></xsl:otherwise>
            </xsl:choose>
         </xsl:attribute>

@@ -3,5 +3,9 @@
 <plugin id="com.dita-bootstrap.pdf" version="1.0.0">
   <require plugin="com.dita-bootstrap.specialization"/>
   <feature extension="dita.xsl.xslfo" value="xsl/xslfo.xsl" type="file"/>
-  <feature extension="dita.specialization.catalog.relative" value="cfg/catalog.xml" type="file"/>
+  <feature
+    extension="dita.specialization.catalog.relative"
+    value="cfg/catalog.xml"
+    type="file"
+  />
 </plugin>

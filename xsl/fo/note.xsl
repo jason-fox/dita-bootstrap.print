@@ -34,7 +34,10 @@
       </xsl:call-template>
       
       <!-- 4. Default Visibility & Rounding -->
-      <xsl:variable name="isZeroWidth" select="normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', '0in', '0mm', '0cm', '0.0pt', '0.0px')"/>
+      <xsl:variable
+        name="isZeroWidth"
+        select="normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', '0in', '0mm', '0cm', '0.0pt', '0.0px')"
+      />
       <xsl:if test="not($isZeroWidth)">
         <xsl:attribute name="border-style">solid</xsl:attribute>
         <xsl:attribute name="border-width"><xsl:value-of select="$bootstrap-border-width"/></xsl:attribute>
