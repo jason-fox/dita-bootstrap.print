@@ -14,43 +14,36 @@
       <xsl:call-template name="commonattributes"/>
       
       <!-- Specialized Bootstrap Styling -->
-      <xsl:variable name="theme" select="(@color, 'primary')[1]"/>
+      <xsl:variable
+        name="theme"
+        select="(@color, 
+          substring-after(tokenize(@outputclass, ' ')[starts-with(., 'badge-')][1], 'badge-'),
+          substring-after(tokenize(@outputclass, ' ')[starts-with(., 'bg-')][1], 'bg-'),
+          substring-after(tokenize(@outputclass, ' ')[starts-with(., 'text-bg-')][1], 'text-bg-'),
+          'primary')[1]"
+      />
       
-      <!-- 1. Background & Text Colors -->
-      <xsl:call-template name="processBootstrapAttrSetReflection">
-        <xsl:with-param name="attrSet" select="concat('__badge__', $theme)"/>
+      <!-- 1. Background & Spacing via Unified Hub -->
+      <xsl:call-template name="bootstrap.decoration">
+          <xsl:with-param name="theme" select="$theme"/>
+          <xsl:with-param name="prefix" select="'__badge__'"/>
       </xsl:call-template>
       
-      <!-- 2. Padding -->
-      <xsl:choose>
-        <xsl:when test="@padding">
-          <xsl:call-template name="processBootstrapSpacing">
-            <xsl:with-param name="attrValue" select="@padding"/>
-            <xsl:with-param name="prefix" select="'p'"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="padding">1pt 3pt</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
+      <!-- 2. Set tighter default padding (1pt 3pt) if not overridden -->
+      <xsl:if test="not(@padding or exists(tokenize(@outputclass, ' ')[starts-with(., 'p-')]))">
+        <xsl:attribute name="padding">1pt 3pt</xsl:attribute>
+      </xsl:if>
 
-      <!-- 3. Rounding (Default to '1' (3pt) for a tighter, badge-like look) -->
-      <xsl:call-template name="processBootstrapRounded">
-        <xsl:with-param name="attrValue" select="(@rounded, '1')[1]"/>
-      </xsl:call-template>
-
-      <!-- Ensure font-weight is bold (typical for badges) but size inherits from parent -->
+      <!-- 3. Badge-specific defaults (weights and alignment) -->
       <xsl:attribute name="font-weight">bold</xsl:attribute>
       <xsl:attribute name="vertical-align">baseline</xsl:attribute>
-
-      <!-- 4. Spacing utility support (Attributes MUST be set before children) -->
-      <xsl:call-template name="processBootstrapSpacing">
-        <xsl:with-param name="attrValue" select="@margin"/>
-        <xsl:with-param name="prefix" select="'m'"/>
-      </xsl:call-template>
-      <xsl:call-template name="processBootstrapOutputClass">
-        <xsl:with-param name="attrValue" select="@outputclass"/>
-      </xsl:call-template>
+      
+      <!-- 4. Default Rounding (tighter badge look) if not overridden -->
+      <xsl:if test="not(@rounded or exists(tokenize(@outputclass, ' ')[starts-with(., 'rounded-')]))">
+        <xsl:call-template name="processBootstrapRounded">
+            <xsl:with-param name="attrValue" select="'1'"/>
+        </xsl:call-template>
+      </xsl:if>
 
       <!-- 5. Content -->
       <xsl:apply-templates/>

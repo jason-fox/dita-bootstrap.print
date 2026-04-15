@@ -66,7 +66,7 @@
           <xsl:value-of select="concat($bootstrap-border-width, ' solid ', $bootstrap-border-color)"/>
         </xsl:attribute>
         <!-- Apply text color from item specific class if present -->
-        <xsl:if test="$itemTheme">
+        <xsl:if test="exists($itemTheme)">
              <xsl:variable name="colorName" select="substring-after($itemTheme[1], 'list-group-item-')"/>
              <xsl:if test="$colorName != '' and $colorName != 'action'">
                  <xsl:call-template name="processBootstrapAttrSetReflection">

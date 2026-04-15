@@ -30,26 +30,59 @@
     When <table divider="yes"> is set:
     - A thicker border (2pt) is applied between table groups (thead, tbody, tfoot).
   -->
+  
+  <xsl:template match="*[contains(@class, ' topic/table ')]" priority="5">
+    <xsl:variable
+      name="hasDecoration"
+      select="@color or @padding or @width or @margin or @shadow or 
+                                               exists(tokenize(@outputclass, ' ')[starts-with(., 'table-') or starts-with(., 'w-') or starts-with(., 'p-') or starts-with(., 'm-') or . = 'shadow-sm' or . = 'shadow' or . = 'shadow-lg' or . = 'shadow-none'])"
+    />
+    <xsl:choose>
+      <xsl:when test="$hasDecoration">
+        <fo:block xsl:use-attribute-sets="table__container">
+          <xsl:call-template name="commonattributes"/>
+          <xsl:call-template name="bootstrap.decoration"/>
+          <xsl:apply-templates
+            select="*[not(contains(@class, ' topic/tgroup ')) and not(contains(@class, ' topic/title '))]"
+          />
+          <xsl:apply-templates select="*[contains(@class, ' topic/tgroup ')]"/>
+        </fo:block>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates
+          select="*[not(contains(@class, ' topic/tgroup ')) and not(contains(@class, ' topic/title '))]"
+        />
+        <xsl:apply-templates select="*[contains(@class, ' topic/tgroup ')]"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="*[contains(@class, ' topic/tgroup ')]" priority="5">
+    <fo:table xsl:use-attribute-sets="table">
+      <xsl:call-template name="commonattributes"/>
+      <xsl:attribute name="start-indent">inherited-property-value(start-indent)</xsl:attribute>
+      <xsl:call-template name="bootstrap.decoration">
+           <xsl:with-param name="node" select="parent::*"/>
+      </xsl:call-template>
+      <xsl:apply-templates/>
+    </fo:table>
+  </xsl:template>
 
   <!-- 1. Table Header Row Styling -->
   <xsl:template match="*[contains(@class, ' topic/thead ')]/*[contains(@class, ' topic/row ')]" priority="5">
     <fo:table-row xsl:use-attribute-sets="thead.row">
       <xsl:call-template name="commonattributes"/>
       
-      <!-- Preference: row/@color > thead/@color > table/@color -->
+      <!-- Inherit theme from thead if not set on row -->
+      <xsl:variable name="thead" select="parent::*"/>
       <xsl:variable
         name="theme"
-        select="(@color, 
-                                          parent::*[contains(@class, ' topic/thead ')]/@color, 
-                                          ancestor::*[contains(@class, ' topic/table ')][1]/@color)[1]"
+        select="(@color, substring-after(tokenize($thead/@outputclass, ' ')[starts-with(., 'table-')][1], 'table-'))[1]"
       />
       
-      <xsl:if test="$theme">
-        <!-- Header takes the main theme color (solid background) -->
-        <xsl:call-template name="processBootstrapAttrSetReflection">
-          <xsl:with-param name="attrSet" select="concat('__table__', $theme)"/>
-        </xsl:call-template>
-      </xsl:if>
+      <xsl:call-template name="bootstrap.decoration">
+          <xsl:with-param name="theme" select="$theme"/>
+      </xsl:call-template>
       
       <xsl:apply-templates/>
     </fo:table-row>
@@ -60,37 +93,42 @@
     <fo:table-row xsl:use-attribute-sets="tbody.row">
       <xsl:call-template name="commonattributes"/>
 
-      <xsl:variable name="rowTheme" select="@color"/>
+      <xsl:variable name="tbody" select="parent::*"/>
       <xsl:variable name="table" select="ancestor::*[contains(@class, ' topic/table ')][1]"/>
+      
       <xsl:variable name="tableTheme" select="$table/@color"/>
-      <xsl:variable name="striped" select="$table/@striped = 'yes'"/>
+      <xsl:variable
+        name="striped"
+        select="$table/@striped = 'yes' or tokenize($table/@outputclass, ' ') = 'table-striped'"
+      />
+      
+      <!-- Inherit theme from tbody if not set on row -->
+      <xsl:variable
+        name="rowTheme"
+        select="(@color, substring-after(tokenize($tbody/@outputclass, ' ')[starts-with(., 'table-')][1], 'table-'))[1]"
+      />
       
       <xsl:variable name="rowIndex" select="count(preceding-sibling::*[contains(@class, ' topic/row ')]) + 1"/>
-      <xsl:variable name="isColoredRow" select="not($striped) or ($rowIndex mod 2 = 0)"/>
       
-      <xsl:choose>
-        <!-- Row-specific color always wins -->
-        <xsl:when test="$rowTheme">
-          <xsl:call-template name="processBootstrapAttrSetReflection">
-            <xsl:with-param name="attrSet" select="concat('__table__', $rowTheme)"/>
-          </xsl:call-template>
-        </xsl:when>
-        <!-- Table-level color or row-striping -->
-        <xsl:when test="$isColoredRow">
-          <xsl:choose>
+      <xsl:call-template name="bootstrap.decoration">
+          <xsl:with-param name="theme" select="$rowTheme"/>
+      </xsl:call-template>
+
+      <!-- Row Striping Logic -->
+      <xsl:if test="$striped and ($rowIndex mod 2 = 0)">
+        <xsl:choose>
             <xsl:when test="$tableTheme">
               <xsl:call-template name="processBootstrapAttrSetReflection">
                 <xsl:with-param name="attrSet" select="concat('__bg__', $tableTheme, '-subtle')"/>
               </xsl:call-template>
             </xsl:when>
-            <xsl:when test="$striped">
+            <xsl:otherwise>
               <xsl:call-template name="processBootstrapAttrSetReflection">
                 <xsl:with-param name="attrSet" select="'table-striped'"/>
               </xsl:call-template>
-            </xsl:when>
+            </xsl:otherwise>
           </xsl:choose>
-        </xsl:when>
-      </xsl:choose>
+      </xsl:if>
 
       <xsl:apply-templates/>
     </fo:table-row>
@@ -108,7 +146,10 @@
     />
     <xsl:variable name="table" select="ancestor::*[contains(@class, ' topic/table ')][1]"/>
     <xsl:variable name="tableTheme" select="$table/@color"/>
-    <xsl:variable name="stripedCols" select="$table/@striped-columns = 'yes'"/>
+    <xsl:variable
+      name="stripedCols"
+      select="$table/@striped-columns = 'yes' or tokenize($table/@outputclass, ' ') = 'table-striped-columns'"
+    />
     
     <xsl:variable name="colIndex" select="if (@dita-ot:x) then xs:integer(@dita-ot:x) else 0"/>
     <xsl:variable
@@ -157,28 +198,17 @@
       <xsl:call-template name="applyAlignAttrs"/>
       <xsl:call-template name="generateTableEntryBorder"/>
       
-      <!-- 4. Theme Border Color (Typically follows the table theme) -->
-      <xsl:if test="$tableTheme">
-        <xsl:call-template name="processBootstrapAttrSetReflection">
-          <xsl:with-param name="attrSet" select="concat('border-', $tableTheme)"/>
-        </xsl:call-template>
-      </xsl:if>
+      <xsl:call-template name="bootstrap.decoration"/>
       
       <!-- 5. Group Divider (Thicker border between table groups) -->
       <xsl:if test="$isGroupDivider">
         <xsl:attribute name="border-top-width">2pt</xsl:attribute>
       </xsl:if>
       
-      <!-- 5. Cell-level color or column striping -->
+      <!-- Entry-specific background overrides -->
       <xsl:choose>
-        <!-- Entry-specific color wins -->
-        <xsl:when test="@color">
-           <xsl:call-template name="processBootstrapAttrSetReflection">
-             <xsl:with-param name="attrSet" select="concat('__table__', @color)"/>
-           </xsl:call-template>
-        </xsl:when>
         <!-- Column Striping (applied if cell has no theme color) -->
-        <xsl:when test="$isColoredCol">
+        <xsl:when test="$isColoredCol and not(@color)">
            <xsl:choose>
             <xsl:when test="$tableTheme">
               <xsl:call-template name="processBootstrapAttrSetReflection">

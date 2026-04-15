@@ -6,13 +6,16 @@
 >
 
   <!-- Icon Support (Bootstrap Icons via SVG) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/icon ')]" priority="5">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/icon ') or (contains(@class,' topic/ph ') and exists(tokenize(@outputclass, ' ')[starts-with(., 'bi-')]))]"
+    priority="10"
+  >
     <xsl:param name="color"/>
     <xsl:if test="@outputclass">
       <xsl:variable name="icon-src">
         <xsl:variable
           name="raw-icon"
-          select="(tokenize(@outputclass, ' ')[starts-with(., 'bi-')], tokenize(@outputclass, ' ')[. != 'bi'])[1]"
+          select="(tokenize(@outputclass, ' ')[starts-with(., 'bi-')], tokenize(@outputclass, ' ')[not(. = ('bi', 'icon')) and not(contains(., '('))])[1]"
         />
         <xsl:variable
           name="clean-icon"
@@ -24,11 +27,52 @@
       <!-- Determine color from ancestors (e.g. if in a primary button, the icon should be white) -->
       <xsl:variable
         name="theme-container"
-        select="ancestor-or-self::*[contains(@class, ' bootstrap-d/button ') or contains(@class, ' bootstrap-d/badge ') or contains(@class, ' bootstrap-d/alert ') or contains(@class, ' topic/note ') or @color][1]"
+        select="ancestor-or-self::*[
+          contains(@class, ' bootstrap-d/button ') or 
+          contains(@class, ' bootstrap-d/badge ') or 
+          contains(@class, ' bootstrap-d/alert ') or 
+          contains(@class, ' topic/note ') or 
+          contains(@class, ' topic/xref ') or
+          @color or
+          exists(tokenize(@outputclass, ' ')[starts-with(., 'btn') or starts-with(., 'alert') or starts-with(., 'badge') or starts-with(., 'link-')])
+        ][1]"
       />
-      <xsl:variable name="theme" select="($theme-container/@color, if ($theme-container) then 'primary' else '')[1]"/>
       
-         <xsl:variable name="icon-color">
+      <xsl:variable name="theme">
+        <xsl:choose>
+          <xsl:when test="$theme-container/@color"><xsl:value-of select="$theme-container/@color"/></xsl:when>
+          <xsl:when
+            test="exists(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'btn-') and not(. = ('btn-lg', 'btn-sm', 'btn-toolbar', 'btn-group'))])"
+          >
+             <xsl:variable
+              name="token"
+              select="tokenize($theme-container/@outputclass, ' ')[starts-with(., 'btn-') and not(. = ('btn-lg', 'btn-sm', 'btn-toolbar', 'btn-group'))][1]"
+            />
+             <xsl:value-of
+              select="substring-after($token, if (contains($token, 'outline-')) then 'btn-outline-' else 'btn-')"
+            />
+          </xsl:when>
+          <xsl:when test="exists(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'alert-')])">
+             <xsl:value-of
+              select="substring-after(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'alert-')][1], 'alert-')"
+            />
+          </xsl:when>
+          <xsl:when test="exists(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'badge-')])">
+             <xsl:value-of
+              select="substring-after(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'badge-')][1], 'badge-')"
+            />
+          </xsl:when>
+          <xsl:when test="exists(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'link-')])">
+             <xsl:value-of
+              select="substring-after(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'link-')][1], 'link-')"
+            />
+          </xsl:when>
+          <xsl:when test="$theme-container">primary</xsl:when>
+          <xsl:otherwise/>
+        </xsl:choose>
+      </xsl:variable>
+
+      <xsl:variable name="icon-color">
         <xsl:choose>
           <!-- 1. Explicit Color Parameter -->
           <xsl:when test="$color != ''">
@@ -37,12 +81,25 @@
 
           <!-- 2. Context-Aware Lookups -->
           <xsl:when test="$theme-container">
-            <xsl:variable name="theme" select="$theme-container/@color"/>
-            <xsl:variable name="container-type" select="local-name($theme-container)"/>
+            <xsl:variable
+              name="is-button"
+              select="contains($theme-container/@class, ' bootstrap-d/button ') or exists(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'btn')])"
+            />
+            <xsl:variable
+              name="is-badge"
+              select="contains($theme-container/@class, ' bootstrap-d/badge ') or exists(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'badge')])"
+            />
+            <xsl:variable
+              name="is-alert"
+              select="contains($theme-container/@class, ' bootstrap-d/alert ') or contains($theme-container/@class, ' topic/note ') or exists(tokenize($theme-container/@outputclass, ' ')[starts-with(., 'alert')])"
+            />
+            <xsl:variable
+              name="is-xref"
+              select="contains($theme-container/@class, ' topic/xref ') and not($is-button)"
+            />
 
             <xsl:choose>
-                <!-- Xref: get the color directly from bootstrap-settings -->
-                <xsl:when test="$container-type = 'xref'">
+                <xsl:when test="$is-xref">
                    <xsl:variable name="explicitVar" select="concat('bootstrap-', ($theme, 'primary')[1])"/>
                    <xsl:choose>
                       <xsl:when test="$bootstrap-settings/entry[@name = $explicitVar]">
@@ -51,42 +108,34 @@
                       <xsl:otherwise><xsl:value-of select="($theme, 'currentColor')[1]"/></xsl:otherwise>
                    </xsl:choose>
                 </xsl:when>
-                <xsl:otherwise>
-                   <xsl:variable name="attrSetName">
-                     <xsl:choose>
-                       <!-- Button: use the button-specific attribute set to get the text color -->
-                       <xsl:when test="$container-type = 'button'">
-                         <xsl:value-of select="concat('__btn__', ($theme, 'primary')[1])"/>
-                       </xsl:when>
-                       <!-- Badge: use the badge-specific attribute set to get the text color -->
-                       <xsl:when test="$container-type = 'badge'">
-                         <xsl:value-of select="concat('__badge__', ($theme, 'primary')[1])"/>
-                       </xsl:when>
-                       <!-- Note/Alert: use the text color from the -subtle background variant -->
-                       <xsl:when test="$container-type = 'note' or $container-type = 'alert'">
-                         <xsl:variable name="note-theme">
-                            <xsl:choose>
-                               <xsl:when test="$theme"><xsl:value-of select="$theme"/></xsl:when>
-                               <xsl:otherwise>
-                                  <xsl:call-template name="getNoteTheme">
-                                     <xsl:with-param name="type" select="$theme-container/@type"/>
-                                  </xsl:call-template>
-                               </xsl:otherwise>
-                            </xsl:choose>
-                         </xsl:variable>
-                         <xsl:value-of select="concat('__bg__', $note-theme, '-subtle')"/>
-                       </xsl:when>
-                       </xsl:choose>
-                     </xsl:variable>
-                     <xsl:if test="$attrSetName != ''">
-                       <xsl:call-template name="getBootstrapAttrValue">
-                         <xsl:with-param name="attrSet" select="$attrSetName"/>
-                       </xsl:call-template>
-                     </xsl:if>
-                </xsl:otherwise>
+                <xsl:when test="$is-button">
+                   <xsl:call-template name="getBootstrapAttrValue">
+                      <xsl:with-param name="attrSet" select="concat('__btn__', ($theme, 'primary')[1])"/>
+                   </xsl:call-template>
+                </xsl:when>
+                <xsl:when test="$is-badge">
+                   <xsl:call-template name="getBootstrapAttrValue">
+                      <xsl:with-param name="attrSet" select="concat('__badge__', ($theme, 'primary')[1])"/>
+                   </xsl:call-template>
+                </xsl:when>
+                <xsl:when test="$is-alert">
+                   <xsl:variable name="note-theme">
+                      <xsl:choose>
+                         <xsl:when test="$theme != ''"><xsl:value-of select="$theme"/></xsl:when>
+                         <xsl:otherwise>
+                            <xsl:call-template name="getNoteTheme">
+                               <xsl:with-param name="type" select="$theme-container/@type"/>
+                            </xsl:call-template>
+                         </xsl:otherwise>
+                      </xsl:choose>
+                   </xsl:variable>
+                   <xsl:call-template name="getBootstrapAttrValue">
+                      <xsl:with-param name="attrSet" select="concat('__bg__', $note-theme, '-subtle')"/>
+                   </xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>currentColor</xsl:otherwise>
             </xsl:choose>
           </xsl:when>
-
           <!-- 3. Fallback -->
           <xsl:otherwise>currentColor</xsl:otherwise>
         </xsl:choose>
@@ -121,9 +170,11 @@
           </xsl:with-param>
           <xsl:with-param name="prefix" select="'p'"/>
         </xsl:call-template>
-        <xsl:apply-templates select="document($icon-src)/*" mode="color-icon">
-           <xsl:with-param name="color" select="$icon-color"/>
-        </xsl:apply-templates>
+        <xsl:if test="doc-available($icon-src)">
+          <xsl:apply-templates select="document($icon-src)/*" mode="color-icon">
+             <xsl:with-param name="color" select="$icon-color"/>
+          </xsl:apply-templates>
+        </xsl:if>
       </fo:instream-foreign-object>
     </xsl:if>
   </xsl:template>

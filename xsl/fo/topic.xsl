@@ -11,7 +11,7 @@
       <!-- Tabbed dialog sections and navigation panes where titles act as labels -->
       <xsl:when
         test="ancestor::*[contains(@class, ' bootstrap-d/tabbed-dialog ')] or 
-                      ancestor::*[@outputclass = ('nav-tabs', 'nav-pills', 'nav-pills-vertical')]"
+                      ancestor::*[tokenize(@outputclass, ' ') = ('nav-tabs', 'nav-pills', 'nav-pills-vertical')]"
       >
         <fo:block xsl:use-attribute-sets="section.title">
           <xsl:attribute name="color">

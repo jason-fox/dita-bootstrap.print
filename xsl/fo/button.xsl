@@ -9,7 +9,10 @@
 >
 
   <!-- Button Toolbar Support (Single Row Block) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button-toolbar ')]" priority="5">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/button-toolbar ') or (tokenize(@outputclass, ' ') = 'btn-toolbar' and (contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]"
+    priority="5"
+  >
     <fo:block margin-top="6pt" margin-bottom="6pt" wrap-option="no-wrap" keep-together.within-line="always">
       <xsl:call-template name="commonattributes"/>
       <xsl:apply-templates mode="toolbar-child"/>
@@ -17,19 +20,28 @@
   </xsl:template>
 
   <!-- Skip group containers in toolbars, just process buttons -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button-group ')]" mode="toolbar-child">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/button-group ') or (tokenize(@outputclass, ' ') = 'btn-group' and (contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]"
+    mode="toolbar-child"
+  >
     <xsl:apply-templates mode="toolbar-child"/>
   </xsl:template>
 
   <!-- Process buttons directly in toolbar -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button ')]" mode="toolbar-child">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/button ') or (exists(tokenize(@outputclass, ' ')[starts-with(., 'btn')]) and (contains(@class, ' topic/xref ') or contains(@class, ' topic/ph ')))]"
+    mode="toolbar-child"
+  >
     <xsl:apply-templates select="."/>
   </xsl:template>
 
   <xsl:template match="text()" mode="toolbar-child"/>
 
   <!-- Button Group Support (Standard) -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button-group ')]" priority="5">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/button-group ') or (tokenize(@outputclass, ' ') = 'btn-group' and (contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]"
+    priority="5"
+  >
     <xsl:variable name="is-vertical" select="@vertical = 'yes'"/>
     <xsl:choose>
         <xsl:when test="$is-vertical">
@@ -37,7 +49,7 @@
           <xsl:variable name="max-chars">
              <xsl:variable
             name="lengths"
-            select="for $b in *[contains(@class, ' bootstrap-d/button ')] return string-length(normalize-space($b))"
+            select="for $b in *[contains(@class, ' bootstrap-d/button ') or exists(tokenize(@outputclass, ' ')[starts-with(., 'btn')])] return string-length(normalize-space($b))"
           />
              <xsl:value-of select="if (empty($lengths)) then 0 else max($lengths)"/>
           </xsl:variable>
@@ -68,7 +80,10 @@
   </xsl:template>
 
   <!-- Special processing for buttons in vertical groups -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button ')]" mode="vertical-button-group">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/button ') or (exists(tokenize(@outputclass, ' ')[starts-with(., 'btn')]) and (contains(@class, ' topic/xref ') or contains(@class, ' topic/ph ')))]"
+    mode="vertical-button-group"
+  >
      <fo:table-row>
         <fo:table-cell>
            <fo:block>
@@ -79,10 +94,13 @@
   </xsl:template>
 
   <!-- Button Support -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/button ')]" priority="5">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/button ') or (exists(tokenize(@outputclass, ' ')[starts-with(., 'btn')]) and (contains(@class, ' topic/xref ') or contains(@class, ' topic/ph ')))]"
+    priority="20"
+  >
     <xsl:variable
       name="is-vertical"
-      select="ancestor::*[contains(@class, ' bootstrap-d/button-group ')][1]/@vertical = 'yes'"
+      select="ancestor::*[contains(@class, ' bootstrap-d/button-group ') or tokenize(@outputclass, ' ') = 'btn-group'][1]/@vertical = 'yes'"
     />
     <xsl:variable name="element" select="if ($is-vertical) then 'fo:block' else 'fo:inline'"/>
 
@@ -103,12 +121,41 @@
         <xsl:call-template name="commonattributes"/>
         
         <!-- Specialized Bootstrap Styling -->
-        <xsl:variable name="theme" select="(@color, 'primary')[1]"/>
-        <xsl:variable name="size" select="(@size, 'default')[1]"/>
-        
+        <xsl:variable name="theme">
+          <xsl:choose>
+            <xsl:when test="@color"><xsl:value-of select="@color"/></xsl:when>
+            <xsl:when
+              test="exists(tokenize(@outputclass, ' ')[starts-with(., 'btn-') and not(. = ('btn-lg', 'btn-sm', 'btn-toolbar', 'btn-group'))])"
+            >
+              <xsl:variable
+                name="token"
+                select="tokenize(@outputclass, ' ')[starts-with(., 'btn-') and not(. = ('btn-lg', 'btn-sm', 'btn-toolbar', 'btn-group'))][1]"
+              />
+              <xsl:value-of
+                select="substring-after($token, if (contains($token, 'outline-')) then 'btn-outline-' else 'btn-')"
+              />
+            </xsl:when>
+            <xsl:otherwise>primary</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+
+        <xsl:variable name="size">
+          <xsl:choose>
+            <xsl:when test="@size"><xsl:value-of select="@size"/></xsl:when>
+            <xsl:when test="tokenize(@outputclass, ' ') = 'btn-lg'">large</xsl:when>
+            <xsl:when test="tokenize(@outputclass, ' ') = 'btn-sm'">small</xsl:when>
+            <xsl:otherwise>default</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+
+        <xsl:variable
+          name="is-outline"
+          select="@outline = 'yes' or exists(tokenize(@outputclass, ' ')[starts-with(., 'btn-outline-')])"
+        />
+
         <!-- 1. Background & Text Colors -->
         <xsl:choose>
-          <xsl:when test="@outline = 'yes'">
+          <xsl:when test="$is-outline">
             <xsl:call-template name="processBootstrapAttrSetReflection">
               <xsl:with-param name="attrSet" select="concat('__color__', $theme)"/>
             </xsl:call-template>
@@ -126,7 +173,7 @@
            <xsl:choose>
              <!-- Outline buttons require a border to be visible; enforce 1pt if theme globally suppresses borders -->
              <xsl:when
-              test="@outline = 'yes' and normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', 'none', '')"
+              test="$is-outline and normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', 'none', '')"
             >1pt</xsl:when>
              <xsl:otherwise><xsl:value-of select="$bootstrap-border-width"/></xsl:otherwise>
            </xsl:choose>
@@ -183,10 +230,19 @@
         </xsl:call-template>
 
         <!-- 6. Button Group Position Awareness -->
-        <xsl:variable name="group" select="ancestor::*[contains(@class, ' bootstrap-d/button-group ')][1]"/>
+        <xsl:variable
+          name="group"
+          select="ancestor::*[contains(@class, ' bootstrap-d/button-group ') or tokenize(@outputclass, ' ') = 'btn-group'][1]"
+        />
         <xsl:if test="$group">
-          <xsl:variable name="is-first" select="not(preceding-sibling::*[contains(@class, ' bootstrap-d/button ')])"/>
-          <xsl:variable name="is-last" select="not(following-sibling::*[contains(@class, ' bootstrap-d/button ')])"/>
+          <xsl:variable
+            name="is-first"
+            select="not(preceding-sibling::*[contains(@class, ' bootstrap-d/button ') or exists(tokenize(@outputclass, ' ')[starts-with(., 'btn')])])"
+          />
+          <xsl:variable
+            name="is-last"
+            select="not(following-sibling::*[contains(@class, ' bootstrap-d/button ') or exists(tokenize(@outputclass, ' ')[starts-with(., 'btn')])])"
+          />
           <xsl:variable name="is-vertical" select="$group/@vertical = 'yes'"/>
           <xsl:choose>
             <!-- Single item: Keep all rounding, zero margins -->
@@ -256,7 +312,7 @@
           <xsl:choose>
             <!-- If button has explicit child text or formatting elements, use those -->
             <xsl:when test="node()[not(self::processing-instruction('ditaot'))]">
-              <xsl:apply-templates select="node()" mode="button-label"/>
+              <xsl:apply-templates select="node()" mode="bootstrap-label"/>
             </xsl:when>
             <!-- Fallback: retrieve target title only (cleanly) -->
             <xsl:when test="@href">
@@ -277,23 +333,65 @@
     </fo:basic-link>
   </xsl:template>
 
-  <!-- Dedicated mode for button labels to ensure no metadata leak -->
-  <xsl:template match="text()" mode="button-label">
-    <xsl:value-of select="."/>
-  </xsl:template>
-
-  <xsl:template match="*" mode="button-label">
-    <xsl:apply-templates select="."/>
-  </xsl:template>
-
-  <!-- Explicitly suppress metadata elements in button labels -->
+  <!-- Support for Bootstrap link utility classes (e.g., link-primary) or @color -->
   <xsl:template
-    match="*[contains(@class, ' topic/desc ') or contains(@class, ' topic/shortdesc ')]"
-    mode="button-label"
-    priority="5"
-  />
+    match="*[contains(@class, ' topic/xref ') and (@color or exists(tokenize(@outputclass, ' ')[starts-with(., 'link-') or . = 'link-underline']))]"
+    priority="10"
+  >
+    <xsl:variable name="theme">
+      <xsl:choose>
+        <xsl:when test="@color"><xsl:value-of select="@color"/></xsl:when>
+        <xsl:when test="exists(tokenize(@outputclass, ' ')[starts-with(., 'link-') and not(. = 'link-underline')])">
+           <xsl:value-of
+            select="substring-after(tokenize(@outputclass, ' ')[starts-with(., 'link-') and not(. = 'link-underline')][1], 'link-')"
+          />
+        </xsl:when>
+        <xsl:otherwise>primary</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
 
-  <!-- Suppress any dita-ot internal processing instructions -->
-  <xsl:template match="processing-instruction()" mode="button-label" priority="5"/>
+    <xsl:variable name="color">
+       <xsl:variable name="explicitVar" select="concat('bootstrap-', $theme)"/>
+       <xsl:choose>
+          <xsl:when test="$bootstrap-settings/entry[@name = $explicitVar]">
+             <xsl:value-of select="$bootstrap-settings/entry[@name = $explicitVar]"/>
+          </xsl:when>
+          <xsl:otherwise/>
+       </xsl:choose>
+    </xsl:variable>
+
+    <fo:basic-link xsl:use-attribute-sets="xref">
+      <xsl:call-template name="commonattributes"/>
+      <xsl:if test="$color != ''">
+         <xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
+      </xsl:if>
+      
+      <xsl:if test="tokenize(@outputclass, ' ') = 'link-underline'">
+         <xsl:attribute name="text-decoration">underline</xsl:attribute>
+      </xsl:if>
+
+      <xsl:choose>
+        <xsl:when test="(@scope = 'external') or not(empty(@format) or @format = 'dita')">
+          <xsl:attribute name="external-destination">url('<xsl:value-of select="@href"/>')</xsl:attribute>
+        </xsl:when>
+        <xsl:when test="@href">
+          <xsl:attribute name="internal-destination">
+             <xsl:value-of select="opentopic-func:getDestinationId(@href)"/>
+          </xsl:attribute>
+        </xsl:when>
+      </xsl:choose>
+
+      <xsl:choose>
+        <!-- If link has explicit child text or icons, use those, but suppress metadata -->
+        <xsl:when test="node()[not(self::processing-instruction('ditaot'))]">
+          <xsl:apply-templates mode="bootstrap-label"/>
+        </xsl:when>
+        <!-- Fallback: retrieve target title only (cleanly) -->
+        <xsl:otherwise>
+          <xsl:apply-templates select="." mode="insert-text"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </fo:basic-link>
+  </xsl:template>
 
 </xsl:stylesheet>

@@ -65,9 +65,17 @@
               <xsl:otherwise>secondary</xsl:otherwise>
             </xsl:choose>
           </xsl:when>
-          <xsl:when test="ancestor::*[contains(@class, ' bootstrap-d/alert ')]"><xsl:value-of
-                  select="(ancestor::*[contains(@class, ' bootstrap-d/alert ')]/@color, 'secondary')[1]"
-                /></xsl:when>
+          <xsl:when
+                test="ancestor::*[contains(@class, ' bootstrap-d/alert ') or tokenize(@outputclass, ' ') = 'alert']"
+              >
+            <xsl:variable
+                  name="node"
+                  select="ancestor::*[contains(@class, ' bootstrap-d/alert ') or tokenize(@outputclass, ' ') = 'alert'][1]"
+                />
+            <xsl:value-of
+                  select="($node/@color, substring-after(tokenize($node/@outputclass, ' ')[starts-with(., 'alert-')][1], 'alert-'), 'secondary')[1]"
+                />
+          </xsl:when>
           <xsl:when
                 test="ancestor::*[contains(@class, ' bootstrap-d/card ') or tokenize(@outputclass, ' ') = 'card']"
               ><xsl:value-of
@@ -114,9 +122,17 @@
                   <xsl:otherwise>secondary</xsl:otherwise>
                 </xsl:choose>
               </xsl:when>
-              <xsl:when test="ancestor::*[contains(@class, ' bootstrap-d/alert ')]"><xsl:value-of
-                  select="(ancestor::*[contains(@class, ' bootstrap-d/alert ')]/@color, 'secondary')[1]"
-                /></xsl:when>
+              <xsl:when
+                test="ancestor::*[contains(@class, ' bootstrap-d/alert ') or tokenize(@outputclass, ' ') = 'alert']"
+              >
+                <xsl:variable
+                  name="node"
+                  select="ancestor::*[contains(@class, ' bootstrap-d/alert ') or tokenize(@outputclass, ' ') = 'alert'][1]"
+                />
+                <xsl:value-of
+                  select="($node/@color, substring-after(tokenize($node/@outputclass, ' ')[starts-with(., 'alert-')][1], 'alert-'), 'secondary')[1]"
+                />
+              </xsl:when>
               <xsl:when
                 test="ancestor::*[contains(@class, ' bootstrap-d/card ') or tokenize(@outputclass, ' ') = 'card']"
               ><xsl:value-of

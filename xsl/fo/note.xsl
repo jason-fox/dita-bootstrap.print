@@ -15,6 +15,9 @@
       <xsl:variable name="theme">
         <xsl:choose>
           <xsl:when test="@color"><xsl:value-of select="@color"/></xsl:when>
+          <xsl:when test="exists(tokenize(@outputclass, ' ')[starts-with(., 'alert-')])">
+            <xsl:value-of select="substring-after(tokenize(@outputclass, ' ')[starts-with(., 'alert-')][1], 'alert-')"/>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="getNoteTheme">
               <xsl:with-param name="type" select="(@type, 'note')[1]"/>
@@ -23,53 +26,24 @@
         </xsl:choose>
       </xsl:variable>
       
-      <!-- 1. Background (Subtle variant includes high-contrast text color) -->
-      <xsl:call-template name="processBootstrapAttrSetReflection">
-        <xsl:with-param name="attrSet" select="concat('__bg__', $theme, '-subtle')"/>
+      <!-- 1. Unified Decoration (subtle variant) -->
+      <xsl:call-template name="bootstrap.decoration">
+          <xsl:with-param name="variant" select="'subtle'"/>
+          <xsl:with-param name="theme" select="$theme"/>
+          <xsl:with-param name="defaultRounded" select="true()"/>
       </xsl:call-template>
 
-      <!-- 3. Border Color (Main theme color) -->
-      <xsl:call-template name="processBootstrapBorderColor">
-        <xsl:with-param name="attrValue" select="$theme"/>
-      </xsl:call-template>
-      
-      <!-- 4. Default Visibility & Rounding -->
-      <xsl:variable
-        name="isZeroWidth"
-        select="normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', '0in', '0mm', '0cm', '0.0pt', '0.0px')"
-      />
-      <xsl:if test="not($isZeroWidth)">
-        <xsl:attribute name="border-style">solid</xsl:attribute>
-        <xsl:attribute name="border-width"><xsl:value-of select="$bootstrap-border-width"/></xsl:attribute>
+      <!-- 3. Spacing Defaults (if not overridden by attributes) -->
+      <xsl:if test="not(@padding or exists(tokenize(@outputclass, ' ')[starts-with(., 'p-')]))">
+        <xsl:attribute name="padding">12pt</xsl:attribute>
       </xsl:if>
-      
-      <xsl:call-template name="processBootstrapRounded">
-        <xsl:with-param name="attrValue" select="'yes'"/>
-      </xsl:call-template>
-
-      <!-- 5. Default Spacing -->
-      <xsl:attribute name="padding">12pt</xsl:attribute>
-      <xsl:attribute name="margin-top">10pt</xsl:attribute>
-      <xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+      <xsl:if test="not(@margin or exists(tokenize(@outputclass, ' ')[starts-with(., 'm-')]))">
+        <xsl:attribute name="margin-top">10pt</xsl:attribute>
+        <xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+      </xsl:if>
       
       <!-- Ensure the note stays on one page -->
       <xsl:attribute name="keep-together.within-page">always</xsl:attribute>
-      
-      <!-- Apply Figure specific outputclass utilities if present -->
-      <xsl:call-template name="processBootstrapOutputClass">
-        <xsl:with-param name="attrValue" select="@outputclass"/>
-      </xsl:call-template>
-      
-      <!-- Process specialized attributes if present -->
-      <xsl:if test="@width">
-        <xsl:call-template name="processBootstrapWidth">
-          <xsl:with-param name="attrValue" select="@width"/>
-        </xsl:call-template>
-      </xsl:if>
-
-      <xsl:call-template name="processBootstrapDirection"/>
-
-      <xsl:call-template name="bootstrap.decoration"/>
 
       <!-- Determine text color for the icon from the theme-subtle attribute set -->
       <xsl:variable name="icon-color">
@@ -81,7 +55,10 @@
       <!-- Note Title / Icon Prefix -->
       <fo:inline font-weight="bold" color="{$icon-color}">
         <xsl:variable name="type" select="(@type, 'note')[1]"/>
-        <xsl:variable name="explicit-icon" select="(@icon, (@otherprops[contains(., 'icon(')], '')[1])[1]"/>
+        <xsl:variable
+          name="explicit-icon"
+          select="(@icon, substring-before(substring-after(@otherprops, 'icon('), ')'))[1]"
+        />
 
         <xsl:if
           test="$BOOTSTRAP_ICONS_INCLUDE = 'yes' and ($explicit-icon != '' or ($type != 'othertype' and $type != 'other'))"
@@ -89,11 +66,11 @@
           <xsl:variable name="icon-name">
             <xsl:choose>
               <xsl:when test="$explicit-icon != ''">
-                 <xsl:variable
+                <xsl:variable
                   name="raw"
-                  select="(tokenize($explicit-icon, ' ')[starts-with(., 'bi-')], tokenize($explicit-icon, ' ')[. != 'bi'])[1]"
+                  select="(tokenize($explicit-icon, ' ')[starts-with(., 'bi-')], tokenize($explicit-icon, ' ')[not(. = ('bi', 'icon')) and not(contains(., '('))])[1]"
                 />
-                 <xsl:value-of select="if (starts-with($raw, 'bi-')) then $raw else concat('bi-', $raw)"/>
+                <xsl:value-of select="if (starts-with($raw, 'bi-')) then $raw else concat('bi-', $raw)"/>
               </xsl:when>
               <xsl:when test="$type = 'tip'">bi-lightbulb</xsl:when>
               <xsl:when test="$type = 'fastpath'">bi-shield-check</xsl:when>

@@ -7,78 +7,67 @@
 >
 
   <!-- Alert Support -->
-  <xsl:template match="*[contains(@class, ' bootstrap-d/alert ')]" priority="5">
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/alert ') or (exists(tokenize(@outputclass, ' ')[starts-with(., 'alert-')]) and (contains(@class, ' topic/section ') or contains(@class, ' topic/div ') or contains(@class, ' topic/bodydiv ')))]"
+    priority="5"
+  >
     <fo:block xsl:use-attribute-sets="section">
       <xsl:call-template name="commonattributes"/>
       
-      <xsl:variable name="theme" select="(@color, 'secondary')[1]"/>
+      <xsl:variable name="theme">
+        <xsl:choose>
+          <xsl:when test="@color"><xsl:value-of select="@color"/></xsl:when>
+          <xsl:when test="exists(tokenize(@outputclass, ' ')[starts-with(., 'alert-')])">
+            <xsl:value-of select="substring-after(tokenize(@outputclass, ' ')[starts-with(., 'alert-')][1], 'alert-')"/>
+          </xsl:when>
+          <xsl:otherwise>secondary</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
       
-      <!-- 1. Background (Subtle variant includes high-contrast text color) -->
-      <xsl:call-template name="processBootstrapAttrSetReflection">
-        <xsl:with-param name="attrSet" select="concat('__bg__', $theme, '-subtle')"/>
+      <!-- 1. Background & Spacing Defaults -->
+      <xsl:call-template name="bootstrap.decoration">
+          <xsl:with-param name="variant" select="'subtle'"/>
+          <xsl:with-param name="theme" select="$theme"/>
+          <xsl:with-param name="defaultRounded" select="true()"/>
       </xsl:call-template>
 
-      <!-- 3. Border Color (Main theme color) -->
-      <xsl:call-template name="processBootstrapBorderColor">
-        <xsl:with-param name="attrValue" select="$theme"/>
-      </xsl:call-template>
-      
-      <!-- 4. Default Visibility & Rounding -->
-      <xsl:variable
-        name="isZeroWidth"
-        select="normalize-space($bootstrap-border-width) = ('0', '0pt', '0px', '0in', '0mm', '0cm', '0.0pt', '0.0px')"
-      />
-      <xsl:if test="not($isZeroWidth)">
-        <xsl:attribute name="border-style">solid</xsl:attribute>
-        <xsl:attribute name="border-width"><xsl:value-of select="$bootstrap-border-width"/></xsl:attribute>
-      </xsl:if>
-
-      <xsl:call-template name="processBootstrapRounded">
-        <xsl:with-param name="attrValue" select="(@rounded, 'yes')[1]"/>
-      </xsl:call-template>
-
-      <!-- 5. Default Padding -->
-      <xsl:call-template name="processBootstrapSpacing">
-        <xsl:with-param name="attrValue" select="(@padding, '3')[1]"/>
-        <xsl:with-param name="prefix" select="'p'"/>
-      </xsl:call-template>
-
-      <!-- Overrides from specialization attributes -->
-      <xsl:if test="@margin">
+      <!-- 2. Set default padding (p-3) if not overridden -->
+      <xsl:if test="not(@padding or exists(tokenize(@outputclass, ' ')[starts-with(., 'p-')]))">
         <xsl:call-template name="processBootstrapSpacing">
-          <xsl:with-param name="attrValue" select="@margin"/>
-          <xsl:with-param name="prefix" select="'m'"/>
+          <xsl:with-param name="attrValue" select="'3'"/>
+          <xsl:with-param name="prefix" select="'p'"/>
         </xsl:call-template>
       </xsl:if>
-      
-      <!-- Handle explicit overrides (if user wants a DIFFERENT border or width) -->
-      <xsl:if test="@border">
-        <xsl:call-template name="processBootstrapBorder">
-          <xsl:with-param name="attrValue" select="@border"/>
-        </xsl:call-template>
-      </xsl:if>
-      <xsl:if test="@width">
-        <xsl:call-template name="processBootstrapWidth">
-          <xsl:with-param name="attrValue" select="@width"/>
-        </xsl:call-template>
-      </xsl:if>
-      
-      <!-- Ensure the alert stays on one page as requested -->
-      <xsl:attribute name="keep-together.within-page">always</xsl:attribute>
-      
-      <!-- Legacy outputclass support -->
-      <xsl:call-template name="processBootstrapOutputClass">
-        <xsl:with-param name="attrValue" select="@outputclass"/>
-      </xsl:call-template>
 
-      <!-- Default margin logic -->
+      <!-- 3. Final default layout adjustments -->
       <xsl:if test="not(@margin)">
         <xsl:attribute name="margin-bottom">10pt</xsl:attribute>
       </xsl:if>
+      <xsl:attribute name="keep-together.within-page">always</xsl:attribute>
 
-      <xsl:call-template name="bootstrap.decoration"/>
       <xsl:apply-templates/>
     </fo:block>
   </xsl:template>
 
+  <xsl:template
+    match="*[contains(@class, ' bootstrap-d/alert ') or exists(tokenize(@outputclass, ' ')[starts-with(., 'alert-')]) or tokenize(@outputclass, ' ') = 'alert']/*[contains(@class, ' topic/title ')]"
+    priority="10"
+  >
+    <xsl:variable name="ctx" select=".."/>
+    <xsl:variable name="theme">
+      <xsl:choose>
+        <xsl:when test="$ctx/@color"><xsl:value-of select="$ctx/@color"/></xsl:when>
+        <xsl:when test="exists(tokenize($ctx/@outputclass, ' ')[starts-with(., 'alert-')])">
+          <xsl:value-of
+            select="substring-after(tokenize($ctx/@outputclass, ' ')[starts-with(., 'alert-')][1], 'alert-')"
+          />
+        </xsl:when>
+        <xsl:otherwise>secondary</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    
+    <fo:block font-weight="bold" font-size="12pt" space-after="4pt">
+      <xsl:apply-templates/>
+    </fo:block>
+  </xsl:template>
 </xsl:stylesheet>

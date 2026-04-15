@@ -12,7 +12,7 @@
 
   <!-- Matches carousel specialized elements or bodydiv/ol with carousel outputclass -->
   <xsl:template
-    match="*[contains(@class, ' bootstrap-d/carousel ') or (contains(@class, ' topic/ol ') and tokenize(@outputclass, ' ') = 'carousel')]"
+    match="*[contains(@class, ' bootstrap-d/carousel ') or (contains(@class, ' topic/ol ') and (tokenize(@outputclass, ' ') = 'carousel' or tokenize(@outputclass, ' ') = 'carousel-fade'))]"
     priority="5"
   >
     <fo:block>
@@ -34,7 +34,7 @@
           *[contains(@class, ' topic/image ')] | 
           *[contains(@class, ' topic/fig ')] | 
           *[contains(@class, ' bootstrap-d/grid-row ') and not(preceding-sibling::*[contains(@class, ' topic/image ')])]/*[contains(@class, ' bootstrap-d/grid-col ')][* or normalize-space()] | 
-          *[not(contains(@class, ' topic/image ') or contains(@class, ' topic/fig ') or contains(@class, ' bootstrap-d/grid-row '))]
+          *[not(contains(@class, ' topic/image ') or contains(@class, ' topic/fig ') or contains(@class, ' bootstrap-d/grid-row ') or (contains(@class, ' topic/div ') and preceding-sibling::*[contains(@class, ' topic/image ')]))]
         )"
       />
 
@@ -113,10 +113,14 @@
                         name="img-idx"
                         select="count(preceding-sibling::*[contains(@class, ' topic/image ')]) + 1"
                       />
-                      <!-- Look for grid-row in the same parent -->
+                      <!-- Look for grid-row or div in the same parent following the image(s) -->
+                      <xsl:variable
+                        name="caption-row"
+                        select="parent::*/*[contains(@class, ' bootstrap-d/grid-row ') or (contains(@class, ' topic/div ') and preceding-sibling::*[contains(@class, ' topic/image ')])][1]"
+                      />
                       <xsl:variable
                         name="matching-col"
-                        select="parent::*/*[contains(@class, ' bootstrap-d/grid-row ')][1]/*[contains(@class, ' bootstrap-d/grid-col ')][$img-idx]"
+                        select="$caption-row/*[contains(@class, ' bootstrap-d/grid-col ') or (contains(@class, ' topic/div ') and exists(tokenize(@outputclass, ' ')[starts-with(., 'col-')]))][$img-idx]"
                       />
                       <xsl:if test="$matching-col">
                         <fo:block font-size="9pt" text-align="center" font-style="italic" margin-top="4pt">
@@ -159,7 +163,7 @@
   </xsl:template>
 
   <xsl:template
-    match="*[contains(@class, ' topic/image ')][ancestor::*[contains(@class, ' bootstrap-d/carousel ') or tokenize(@outputclass, ' ') = 'carousel']]"
+    match="*[contains(@class, ' topic/image ')][ancestor::*[contains(@class, ' bootstrap-d/carousel ') or tokenize(@outputclass, ' ') = 'carousel' or tokenize(@outputclass, ' ') = 'carousel-fade']]"
     priority="20"
   >
     <fo:block text-align="center">
