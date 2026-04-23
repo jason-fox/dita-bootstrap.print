@@ -19,7 +19,7 @@ dita install https://github.com/dita-bootstrap/dita-bootstrap.pdf/archive/develo
 
 ## Using
 
-Specify the `pdf` format when building output with the `dita` command. If the plug-in is installed, the Bootstrap-based 
+Specify the `pdf` format when building output with the `dita` command. If the plug-in is installed, the Bootstrap-based
 XSL-FO overrides will be applied automatically.
 
 ```console
@@ -29,7 +29,7 @@ dita --input=path/to/your.ditamap \
 
 ## Featured Bootstrap components
 
-The plug-in includes XSL-FO handling for the following DITA Bootstrap components. You can use these through the 
+The plug-in includes XSL-FO handling for the following DITA Bootstrap components. You can use these through the
 **DITA Bootstrap Specialization** elements to achieve a consistent look in print:
 
 - [Accordions](https://dita-bootstrap.github.io/dita-bootstrap/accordion.html) (`<accordion>`)
@@ -92,14 +92,14 @@ Most DITA Bootstrap Specializations, as well as many base DITA elements, support
 - **@color**: Sets the border and background theme (e.g., `primary` uses a solid primary border and a subtle primary background).
 
 ```xml
-<thumbnail href="image.png" color="primary" />
+<thumbnail href="image.png" color="primary"/>
 ```
 
 ## Customizing
 
 ### Common Bootstrap utility classes
 
-The common Bootstrap utility classes for borders, background, text, and spacing can also be used via the `outputclass` 
+The common Bootstrap utility classes for borders, background, text, and spacing can also be used via the `outputclass`
 attribute in DITA topics. The print plug-in interprets these classes and applies corresponding XSL-FO styling.
 
 For more information on the available classes, see the [main DITA Bootstrap documentation][2].
