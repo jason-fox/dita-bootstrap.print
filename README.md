@@ -1,6 +1,6 @@
 # DITA Bootstrap PDF
 
-A plug-in for [DITA Open Toolkit][1] that adds PDF print output to the [DITA Bootstrap plug-in][2].
+A plug-in for [DITA Open Toolkit][1] that adds PDF print output to the [DITA Bootstrap plug-ins][2].
 
 - [Installing](#installing)
 - [Using](#using)
@@ -14,7 +14,7 @@ Use the `dita` command to add this plug-in and its requirements to your DITA Ope
 
 ```console
 dita install dita-bootstrap.specialization
-dita install https://github.com/dita-bootstrap/dita-bootstrap.pdf/archive/develop.zip
+dita install dita-bootstrap.pdf
 ```
 
 ## Using
